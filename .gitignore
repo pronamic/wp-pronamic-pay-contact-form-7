@@ -1,0 +1,24 @@
+# Build
+/build/
+
+# Composer
+/composer.lock
+/vendor/
+
+# Eclipse
+/.buildpath
+/.project
+/.settings
+
+# Node.js
+/package-lock.json
+/node_modules/
+
+# SASS
+.sass-cache
+
+# WordPress
+/wordpress/
+
+# WordPress content
+/wp-content/

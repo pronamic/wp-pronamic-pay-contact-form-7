@@ -1,0 +1,58 @@
+{
+	"name": "wp-pay-extensions/contact-form-7",
+	"description": "Contact Form 7 driver for the WordPress payment processing library.",
+	"keywords": ["wordpress", "wp", "pay", "payments", "contact-form-7", "gateway", "extension", "pronamic"],
+	"homepage": "http://www.wp-pay.org/extensions/contact-form-7/",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Pronamic",
+			"email": "info@pronamic.eu",
+			"homepage": "http://www.pronamic.eu/",
+			"role": "Company"
+		},
+		{
+			"name": "Remco Tolsma",
+			"email": "info@remcotolsma.nl",
+			"homepage": "http://www.remcotolsma.nl/",
+			"role": "Developer"
+		}
+	],
+	"support": {
+		"email": "support@wp-pay.org",
+		"issues": "https://github.com/wp-pay-extensions/contact-form-7/issues",
+		"source": "https://github.com/wp-pay-extensions/contact-form-7/"
+	},
+	"autoload": {
+		"psr-4": {
+			"Pronamic\\WordPress\\Pay\\Extensions\\ContactForm7\\": "src/"
+		}
+	},
+	"config": {
+		"sort-packages": true
+	},
+	"require": {
+		"php": ">=5.6.20",
+		"wp-pay/core": "^2.3"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.5",
+		"php-coveralls/php-coveralls": "^2.1",
+		"phpcompatibility/php-compatibility": "^9.3",
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"phpmd/phpmd": "^2.7",
+		"phpunit/phpunit": "^5.7 || ^6.0",
+		"roots/wordpress": "^5.2",
+		"squizlabs/php_codesniffer": "^3.4",
+		"wp-coding-standards/wpcs": "^2.1",
+		"wp-phpunit/wp-phpunit": "^5.2"
+	},
+	"scripts": {
+		"coveralls": "vendor/bin/coveralls -v",
+		"phpcbf": "vendor/bin/phpcbf",
+		"phpcs": "vendor/bin/phpcs -s -v",
+		"phplint": "find src tests -name '*.php' | xargs -n 1 -P 4 php -l",
+		"phpmd": "vendor/bin/phpmd src,tests text phpmd.ruleset.xml --suffixes php",
+		"phpunit": "vendor/bin/phpunit"
+	}
+}
