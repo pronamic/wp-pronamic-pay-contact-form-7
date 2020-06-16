@@ -10,8 +10,8 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
-use Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags\AmountTag;
-use WPCF7_ContactForm;
+use Pronamic\WordPress\Pay\Core\Gateway;
+use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
@@ -20,6 +20,8 @@ use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLines;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
+use WPCF7_ContactForm;
+use WPCF7_FormTagsManager;
 
 /**
  * Pronamic
@@ -29,6 +31,19 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * @since   1.0.0
  */
 class Pronamic {
+	/**
+	 * Get default gateway.
+	 *
+	 * @return Gateway|null
+	 */
+	public static function get_default_gateway() {
+		$config_id = \get_option( 'pronamic_pay_config_id' );
+
+		$gateway = Plugin::get_gateway( $config_id );
+
+		return $gateway;
+	}
+
 	/**
 	 * Get Pronamic payment from Contact Form 7 form.
 	 *
@@ -40,7 +55,32 @@ class Pronamic {
 		$payment = new Payment();
 
 		// Contact Form 7.
-		$amount = AmountTag::get_value( 'amount' );
+		$amount = null;
+		$payment_method = null;
+		$issuer = null;
+
+		$tags_manager = WPCF7_FormTagsManager::get_instance();
+
+		$scanned_tags = $tags_manager->get_scanned_tags();
+
+		foreach ( $scanned_tags as $tag ) {
+			switch ( $tag->type ) {
+				case Tags\AmountTag::TAG:
+					$amount = Tags\AmountTag::get_value( $tag->name );
+
+					break;
+				case Tags\PaymentMethodTag::TAG:
+					$payment_method = Tags\PaymentMethodTag::get_value( $tag->name );
+
+					break;
+				/*
+				 case Tags\IssuerTag::TAG:
+					$issuer = Tags\IssuerTag::get_value( $tag->name );
+
+					break;
+				*/
+			}
+		}
 
 		if ( null === $amount ) {
 			return null;
@@ -67,6 +107,7 @@ class Pronamic {
 		);
 		$payment->source      = 'contact-form-7';
 		$payment->source_id   = $entry_id;
+		$payment->method      = $payment_method;
 		$payment->issuer      = null;
 
 		/*

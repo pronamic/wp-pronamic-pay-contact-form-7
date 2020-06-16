@@ -12,7 +12,6 @@ namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
 use GFUserData;
 use Pronamic\WordPress\Pay\AbstractPluginIntegration;
-use Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags\AmountTag;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
@@ -96,10 +95,13 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function register_tags() {
 		// Amount tag.
-		$amount = new AmountTag();
+		new Tags\AmountTag();
 
 		// Payment method tag.
-		//$payment_method = new PaymentMethodTag();
+		new Tags\PaymentMethodTag();
+
+		// Issuer tag.
+		//new Tags\IssuerTag();
 	}
 
 	/**
@@ -122,7 +124,7 @@ class Extension extends AbstractPluginIntegration {
 		$gateway = Plugin::get_gateway( $config_id );
 
 		if ( ! $gateway ) {
-			return false;
+			return;
 		}
 
 		// Start payment.
@@ -134,8 +136,6 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		$payment->config_id = $config_id;
-		$payment->method    = null;
-		$payment->issuer    = null;
 
 		$error = null;
 

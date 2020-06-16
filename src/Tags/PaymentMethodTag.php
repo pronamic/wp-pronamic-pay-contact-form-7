@@ -1,6 +1,6 @@
 <?php
 /**
- * Amount form tag.
+ * Payment method form tag.
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2020 Pronamic
@@ -10,7 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 
-use Pronamic\WordPress\Money\Parser;
+use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
 use function wpcf7_form_controls_class;
 use function wpcf7_format_atts;
 use function wpcf7_get_hangover;
@@ -18,20 +18,20 @@ use function wpcf7_get_validation_error;
 use function wpcf7_support_html5;
 
 /**
- * Amount tag.
+ * Payment method tag.
  *
  * @author  Reüel van der Steege
  * @since   1.0.0
  * @version 1.0.0
  */
-class AmountTag {
+class PaymentMethodTag {
 	/**
 	 * Form tag.
 	 */
-	const TAG = 'pronamic_pay_amount';
+	const TAG = 'pronamic_pay_method';
 
 	/**
-	 * Amount constructor.
+	 * Payment method tag constructor.
 	 */
 	public function __construct() {
 		\wpcf7_add_form_tag( self::TAG, array( $this, 'handler' ), true );
@@ -53,6 +53,13 @@ class AmountTag {
 			return '';
 		}
 
+		// Get gateway.
+		$gateway = Pronamic::get_default_gateway();
+
+		if ( null === $gateway ) {
+			return '';
+		}
+
 		$error = wpcf7_get_validation_error( $tag->name );
 
 		$class = wpcf7_form_controls_class( $tag->type, 'wpcf7-text' );
@@ -67,9 +74,7 @@ class AmountTag {
 			'class'        => $tag->get_class_option( $class ),
 			'id'           => $tag->get_id_option(),
 			'name'         => $tag->name,
-			'size'         => $tag->get_size_option( '8' ),
 			'tabindex'     => $tag->get_option( 'tabindex', 'signed_int', true ),
-			'type'         => 'text',
 			'value'        => wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
 		);
 
@@ -77,28 +82,46 @@ class AmountTag {
 			$attributes['readonly'] = 'readonly';
 		}
 
+		// Payment method options.
+		$method_options = $gateway->get_payment_method_field_options();
+
+		$options = array();
+
+		foreach ( $method_options as $value => $label ) {
+			$options[] = sprintf(
+				'<option value="%1$s" %2$s>%3$s</option>',
+				\esc_attr( $value ),
+				selected( $attributes['value'], $value, false ),
+				\esc_html( $label )
+			);
+		}
+
 		$html = \sprintf(
-			'<span class="wpcf7-form-control-wrap %1$s"><input %2$s>%3$s</span>',
+			'<span class="wpcf7-form-control-wrap %1$s"><select %2$s>%3$s</select>%4$s</span>',
 			\sanitize_html_class( $tag->name ),
 			wpcf7_format_atts( $attributes ),
+			implode( '', $options ),
 			$error
 		);
 
 		return $html;
 	}
 
+	/**
+	 * Get value.
+	 *
+	 * @param string $name Field name.
+	 *
+	 * @return string|null
+	 */
 	public static function get_value( $name ) {
 		$value = trim( \filter_input( \INPUT_POST, $name, \FILTER_SANITIZE_STRING ) );
 
-		$parser = new Parser();
-
-		try {
-			$amount = $parser->parse( $value );
-		} catch ( \Exception $e ) {
+		if ( empty( $value ) ) {
 			return null;
 		}
 
-		return $amount;
+		return $value;
 	}
 
 	/**
@@ -119,11 +142,13 @@ class AmountTag {
 			return $result;
 		}
 
-		// Parse input.
-		$amount = self::get_value( $tag->name );
+		// Check if gateway requires payment method.
+		$gateway = Pronamic::get_default_gateway();
 
-		if ( null === $amount ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_pronamic_pay_amount' ) );
+		if ( null !== $gateway && $gateway->payment_method_is_required() && empty( $value ) ) {
+			$result->invalidate( $tag, wpcf7_get_message( 'invalid_pronamic_pay_method_required' ) );
+
+			return $result;
 		}
 
 		return $result;
@@ -140,9 +165,9 @@ class AmountTag {
 		return array_merge(
 			$messages,
 			array(
-				'invalid_pronamic_pay_amount' => array(
-					'description' => __( 'Input amount is invalid.', 'pronamic_ideal' ),
-					'default'     => __( 'The input amount is invalid.', 'pronamic_ideal' )
+				'invalid_pronamic_pay_method_required' => array(
+					'description' => __( 'Payment method required.', 'pronamic_ideal' ),
+					'default'     => __( 'The payment method invalid.', 'pronamic_ideal' )
 				),
 			)
 		);
