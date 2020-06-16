@@ -73,12 +73,10 @@ class Pronamic {
 					$payment_method = Tags\PaymentMethodTag::get_value( $tag->name );
 
 					break;
-				/*
-				 case Tags\IssuerTag::TAG:
+				case Tags\IssuerTag::TAG:
 					$issuer = Tags\IssuerTag::get_value( $tag->name );
 
 					break;
-				*/
 			}
 		}
 
@@ -108,7 +106,7 @@ class Pronamic {
 		$payment->source      = 'contact-form-7';
 		$payment->source_id   = $entry_id;
 		$payment->method      = $payment_method;
-		$payment->issuer      = null;
+		$payment->issuer      = $issuer;
 
 		/*
 		 * Totals.

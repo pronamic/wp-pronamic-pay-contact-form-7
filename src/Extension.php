@@ -101,7 +101,7 @@ class Extension extends AbstractPluginIntegration {
 		new Tags\PaymentMethodTag();
 
 		// Issuer tag.
-		//new Tags\IssuerTag();
+		new Tags\IssuerTag();
 	}
 
 	/**
