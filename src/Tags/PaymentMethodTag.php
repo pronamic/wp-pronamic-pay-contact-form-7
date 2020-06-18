@@ -62,7 +62,7 @@ class PaymentMethodTag {
 
 		$error = wpcf7_get_validation_error( $tag->name );
 
-		$class = wpcf7_form_controls_class( $tag->type, 'wpcf7-text' );
+		$class = wpcf7_form_controls_class( $tag->type, 'wpcf7-select' );
 
 		if ( $error ) {
 			$class .= ' wpcf7-not-valid';

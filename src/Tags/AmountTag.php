@@ -87,9 +87,7 @@ class AmountTag {
 		return $html;
 	}
 
-	public static function get_value( $name ) {
-		$value = trim( \filter_input( \INPUT_POST, $name, \FILTER_SANITIZE_STRING ) );
-
+	public static function parse_value( $value ) {
 		$parser = new Parser();
 
 		try {
@@ -120,7 +118,7 @@ class AmountTag {
 		}
 
 		// Parse input.
-		$amount = self::get_value( $tag->name );
+		$amount = self::parse_value( $value );
 
 		if ( null === $amount ) {
 			$result->invalidate( $tag, wpcf7_get_message( 'invalid_pronamic_pay_amount' ) );

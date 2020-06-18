@@ -31,20 +31,28 @@
   "bugs": {
     "url": "https://github.com/wp-pay-extensions/contact-form-7/issues"
   },
+  "scripts": {
+    "babel": "babel ./js/src -d ./js/dist --source-maps",
+    "eslint": "eslint . --ext .json --ext .js",
+    "postcss": "postcss css/*.css --use autoprefixer --dir css; postcss css/*.css -o css/fundraising.min.css",
+    "sass": "sass scss:css",
+    "sass-lint": "sass-lint --verbose"
+  },
   "homepage": "http://www.wp-pay.org/extensions/contact-form-7/",
   "devDependencies": {
-    "autoprefixer": "^9.6.1",
-    "grunt": "^1.0.4",
-    "grunt-contrib-compass": "^1.1.1",
-    "grunt-contrib-cssmin": "^3.0.0",
-    "grunt-contrib-jshint": "^2.1.0",
-    "grunt-contrib-uglify": "^4.0.1",
-    "grunt-phpcs": "^0.4.0",
-    "grunt-phplint": "0.1.0",
-    "grunt-phpmd": "^0.1.1",
-    "grunt-phpunit": "^0.3.6",
-    "grunt-postcss": "^0.9.0",
-    "grunt-sass-lint": "^0.2.4",
-    "load-grunt-tasks": "^5.1.0"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "autoprefixer": "^9.7.6",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-inline-json-import": "^0.3.2",
+    "cssnano": "^4.1.10",
+    "eslint": "^7.0.0",
+    "eslint-plugin-json": "^2.1.1",
+    "postcss": "^7.0.30",
+    "postcss-cli": "^7.1.1",
+    "postcss-eol": "0.0.8",
+    "sass": "^1.26.5",
+    "sass-lint": "^1.13.1"
   }
 }
