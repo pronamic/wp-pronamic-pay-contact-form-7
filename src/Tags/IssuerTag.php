@@ -89,7 +89,9 @@ class IssuerTag {
 			return '';
 		}
 
-		$options = array();
+		$options = array(
+			'<option></option>',
+		);
 
 		foreach ( $issuer_options[0]['options'] as $value => $label ) {
 			$options[] = sprintf(
