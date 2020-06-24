@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
 use Pronamic\WordPress\Pay\Core\Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
@@ -75,6 +76,25 @@ class Pronamic {
 			switch ( $type ) {
 				case 'amount':
 					return Tags\AmountTag::parse_value( $value );
+
+					break;
+				case 'method':
+					$is_active = PaymentMethods::is_active( $value );
+
+					if ( ! $is_active ) {
+						/*
+						 * Try to get payment method value from piped field values.
+						 *
+						 * @link https://contactform7.com/selectable-recipient-with-pipes/
+						 */
+						$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+
+						$search = \array_search( $value, $pipes );
+
+						if ( false !== $search ) {
+							$value = $search;
+						}
+					}
 
 					break;
 			}
