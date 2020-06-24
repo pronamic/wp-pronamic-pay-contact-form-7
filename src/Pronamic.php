@@ -91,6 +91,17 @@ class Pronamic {
 			// Parse value.
 			switch ( $type ) {
 				case 'amount':
+					// Handle free text input.
+					if ( $tag->has_option( 'free_text' ) && $value === end( $tag->values ) ) {
+						$free_text_name = sprintf(
+							'_wpcf7_%1$s_free_text_%2$s',
+							$tag->basetype,
+							$tag->name
+						);
+
+						$value = trim( \filter_input( \INPUT_POST, $free_text_name, \FILTER_SANITIZE_STRING ) );
+					}
+
 					return Tags\AmountTag::parse_value( $value );
 
 					break;
