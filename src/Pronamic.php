@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
 use Pronamic\WordPress\Pay\Core\Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
@@ -122,6 +123,12 @@ class Pronamic {
 			return null;
 		}
 
+		$gateway = Pronamic::get_default_gateway();
+
+		if ( null === $gateway ) {
+			return null;
+		}
+
 		$unique_id = \time();
 
 		// Title.
@@ -146,11 +153,19 @@ class Pronamic {
 			);
 		}
 
+		// Payment method.
+		$payment_method = self::get_submission_value( 'method' );
+		$issuer         = self::get_submission_value( 'issuer' );
+
+		if ( empty( $payment_method ) && ( null !== $issuer || $gateway->payment_method_is_required() ) ) {
+			$payment_method = PaymentMethods::IDEAL;
+		}
+
 		$payment->title       = $title;
 		$payment->description = $description;
 		$payment->source      = 'contact-form-7';
-		$payment->method      = self::get_submission_value( 'method' );
-		$payment->issuer      = self::get_submission_value( 'issuer' );
+		$payment->method      = $payment_method;
+		$payment->issuer      = $issuer;
 
 		/*
 		 * Totals.
