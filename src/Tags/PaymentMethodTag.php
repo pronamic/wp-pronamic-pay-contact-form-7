@@ -10,6 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
 use function wpcf7_form_controls_class;
 use function wpcf7_format_atts;
@@ -88,6 +89,10 @@ class PaymentMethodTag {
 		$options = array();
 
 		foreach ( $method_options as $value => $label ) {
+			if ( PaymentMethods::is_direct_debit_method( $value ) ) {
+				continue;
+			}
+
 			$options[] = sprintf(
 				'<option value="%1$s" %2$s>%3$s</option>',
 				\esc_attr( $value ),
