@@ -51,7 +51,7 @@ class Pronamic {
 	 * @return mixed
 	 */
 	public static function get_submission_value( $type ) {
-		$value = null;
+		$result = null;
 
 		$prefixed_type = 'pronamic_pay_' . $type;
 
@@ -66,54 +66,68 @@ class Pronamic {
 
 			$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
 
+			if ( 'checkbox' === $tag->basetype ) {
+				$value = \filter_input( \INPUT_POST, $tag->name, \FILTER_DEFAULT, \FILTER_REQUIRE_ARRAY );
+			}
+
 			// Check empty value.
 			if ( empty( $value ) ) {
-				$value = null;
-
 				continue;
 			}
 
-			/*
-			 * Try to get value from piped field values.
-			 *
-			 * @link https://contactform7.com/selectable-recipient-with-pipes/
-			 */
-			if ( $tag->pipes instanceof WPCF7_Pipes ) {
-				$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+			$values = (array) $value;
 
-				$pipe_value = \array_search( $value, $pipes );
+			// Loop values.
+			foreach ( $values as $value ) {
+				/*
+				 * Try to get value from piped field values.
+				 *
+				 * @link https://contactform7.com/selectable-recipient-with-pipes/
+				 */
+				if ( $tag->pipes instanceof WPCF7_Pipes ) {
+					$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
 
-				if ( false !== $pipe_value ) {
-					$value = $pipe_value;
-				}
-			}
+					$pipe_value = \array_search( $value, $pipes );
 
-			// Parse value.
-			switch ( $type ) {
-				case 'amount':
-					// Handle free text input.
-					if ( $tag->has_option( 'free_text' ) && $value === end( $tag->values ) ) {
-						$free_text_name = sprintf(
-							'_wpcf7_%1$s_free_text_%2$s',
-							$tag->basetype,
-							$tag->name
-						);
-
-						$value = trim( \filter_input( \INPUT_POST, $free_text_name, \FILTER_SANITIZE_STRING ) );
+					if ( false !== $pipe_value ) {
+						$value = $pipe_value;
 					}
+				}
 
-					return Tags\AmountTag::parse_value( $value );
+				// Parse value.
+				switch ( $type ) {
+					case 'amount':
+						// Handle free text input.
+						if ( $tag->has_option( 'free_text' ) && $value === end( $tag->values ) ) {
+							$free_text_name = sprintf(
+								'_wpcf7_%1$s_free_text_%2$s',
+								$tag->basetype,
+								$tag->name
+							);
 
-					break;
+							$value = trim( \filter_input( \INPUT_POST, $free_text_name, \FILTER_SANITIZE_STRING ) );
+						}
+
+						$value = Tags\AmountTag::parse_value( $value );
+
+						// Set parsed value as result or add to existing money result.
+						if ( null !== $value ) {
+							$result = ( null === $result ? $value : $result->add( $value ) );
+						}
+
+						break;
+					default:
+						$result = $value;
+				}
 			}
 
 			// Prefer tag with option (`pronamic_pay_email`) over tag name match (e.g. `email`).
 			if ( $tag->has_option( $prefixed_type ) ) {
-				return $value;
+				return $result;
 			}
 		}
 
-		return $value;
+		return $result;
 	}
 
 	/**
