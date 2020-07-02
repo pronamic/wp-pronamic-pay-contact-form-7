@@ -85,11 +85,6 @@ class Extension extends AbstractPluginIntegration {
 	 * Initialize
 	 */
 	public function init() {
-		// Admin.
-		if ( \is_admin() ) {
-			new Admin();
-		}
-
 		// Actions.
 		\add_action( 'wpcf7_before_send_mail', array( $this, 'before_send_mail' ), 10, 3 );
 		\add_action( 'wpcf7_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
