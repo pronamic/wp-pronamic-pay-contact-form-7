@@ -40,6 +40,9 @@ class PaymentMethodTag {
 		// Filters.
 		\add_filter( 'wpcf7_validate_' . self::TAG, array( $this, 'validate' ), 10, 2 );
 		\add_filter( 'wpcf7_messages', array( $this, 'messages' ) );
+
+		// Actions.
+		\add_action( 'wpcf7_admin_init', array( $this, 'add_tag_generator' ), 60 );
 	}
 
 	/**
@@ -176,5 +179,27 @@ class PaymentMethodTag {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Add tag generator.
+	 *
+	 * @return void
+	 */
+	public function add_tag_generator() {
+		$tag_generator = \WPCF7_TagGenerator::get_instance();
+
+		$tag_generator->add( self::TAG, __( 'Payment method', 'pronamic_ideal' ), array( $this, 'tag_generator' ) );
+	}
+
+	/**
+	 * Tag generator.
+	 *
+	 * @param \WPCF7_ContactForm $form Contact form.
+	 * @param array              $args Arguments.
+	 *
+	 */
+	public function tag_generator( $form, $args ) {
+		require dirname( __FILE__ ) . '/../../views/payment-method-tag-generator.php';
 	}
 }
