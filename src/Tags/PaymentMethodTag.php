@@ -91,8 +91,23 @@ class PaymentMethodTag {
 
 		$options = array();
 
+		/*
+		 * Search payment method values in tag pipes.
+		 *
+		 * @link https://contactform7.com/selectable-recipient-with-pipes/
+		 */
+		$pipes = array();
+
+		if ( $tag->pipes instanceof \WPCF7_Pipes ) {
+			$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+		}
+
 		foreach ( $method_options as $value => $label ) {
 			if ( PaymentMethods::is_direct_debit_method( $value ) ) {
+				continue;
+			}
+
+			if ( ! empty( $tag->values ) && ! \array_key_exists( $value, $pipes ) ) {
 				continue;
 			}
 

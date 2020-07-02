@@ -33,8 +33,6 @@ $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-con
 			?>
 		</legend>
 
-		<input type="checkbox" name="<?php echo \esc_attr( self::TAG ); ?>" class="keyboard-interaction option" checked="checked">
-
 		<table class="form-table">
 			<tbody>
 				<tr>
@@ -129,7 +127,7 @@ $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-con
 </div>
 
 <div class="insert-box">
-	<input type="text" name="select" class="tag code" readonly="readonly" onfocus="this.select()">
+	<input type="text" name="<?php echo esc_attr( self::TAG ); ?>" class="tag code" readonly="readonly" onfocus="this.select()">
 
 	<div class="submitbox">
 		<input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __( 'Insert Tag', 'pronamic_ideal' ) ); ?>">
