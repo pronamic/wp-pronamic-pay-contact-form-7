@@ -87,7 +87,7 @@ class Pronamic {
 				if ( $tag->pipes instanceof WPCF7_Pipes ) {
 					$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
 
-					$pipe_value = \array_search( $value, $pipes );
+					$pipe_value = \array_search( $value, $pipes, true );
 
 					if ( false !== $pipe_value ) {
 						$value = $pipe_value;
@@ -98,7 +98,7 @@ class Pronamic {
 				switch ( $type ) {
 					case 'amount':
 						// Handle free text input.
-						if ( $tag->has_option( 'free_text' ) && $value === end( $tag->values ) ) {
+						if ( $tag->has_option( 'free_text' ) && end( $tag->values ) === $value ) {
 							$free_text_name = sprintf(
 								'_wpcf7_%1$s_free_text_%2$s',
 								$tag->basetype,
@@ -148,7 +148,7 @@ class Pronamic {
 			return null;
 		}
 
-		$gateway = Pronamic::get_default_gateway();
+		$gateway = self::get_default_gateway();
 
 		if ( null === $gateway ) {
 			return null;
@@ -219,7 +219,7 @@ class Pronamic {
 
 		$address->set_name( $contact_name );
 
-		$billing_address = clone $address;
+		$billing_address  = clone $address;
 		$shipping_address = clone $address;
 
 		$address_fields = array(

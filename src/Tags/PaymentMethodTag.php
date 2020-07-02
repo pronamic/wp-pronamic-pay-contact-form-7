@@ -75,11 +75,11 @@ class PaymentMethodTag {
 		$value = (string) reset( $tag->values );
 
 		$attributes = array(
-			'class'        => $tag->get_class_option( $class ),
-			'id'           => $tag->get_id_option(),
-			'name'         => $tag->name,
-			'tabindex'     => $tag->get_option( 'tabindex', 'signed_int', true ),
-			'value'        => wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
+			'class'    => $tag->get_class_option( $class ),
+			'id'       => $tag->get_id_option(),
+			'name'     => $tag->name,
+			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
+			'value'    => wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
 		);
 
 		if ( $tag->has_option( 'readonly' ) ) {
@@ -190,7 +190,7 @@ class PaymentMethodTag {
 			array(
 				'invalid_pronamic_pay_method_required' => array(
 					'description' => __( 'Payment method required.', 'pronamic_ideal' ),
-					'default'     => __( 'The payment method invalid.', 'pronamic_ideal' )
+					'default'     => __( 'The payment method is invalid.', 'pronamic_ideal' ),
 				),
 			)
 		);
@@ -212,7 +212,7 @@ class PaymentMethodTag {
 	 *
 	 * @param \WPCF7_ContactForm $form Contact form.
 	 * @param array              $args Arguments.
-	 *
+	 * @return void
 	 */
 	public function tag_generator( $form, $args ) {
 		require dirname( __FILE__ ) . '/../../views/payment-method-tag-generator.php';

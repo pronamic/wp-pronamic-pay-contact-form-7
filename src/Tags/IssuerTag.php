@@ -38,7 +38,6 @@ class IssuerTag {
 
 		// Filters.
 		\add_filter( 'wpcf7_validate_' . self::TAG, array( $this, 'validate' ), 10, 2 );
-		\add_filter( 'wpcf7_messages', array( $this, 'messages' ) );
 
 		// Actions.
 		\add_action( 'wpcf7_admin_init', array( $this, 'add_tag_generator' ), 60 );
@@ -155,21 +154,6 @@ class IssuerTag {
 	}
 
 	/**
-	 * Contact Form 7 messages.
-	 *
-	 * @param array $messages Messages.
-	 *
-	 * @return array
-	 */
-	public function messages( $messages ) {
-		return array_merge(
-			$messages,
-			array(
-			)
-		);
-	}
-
-	/**
 	 * Add tag generator.
 	 *
 	 * @return void
@@ -183,9 +167,9 @@ class IssuerTag {
 	/**
 	 * Tag generator.
 	 *
-	 * @param       $form
-	 * @param array $args Arguments.
-	 *
+	 * @param \WPCF7_ContactForm $form Contact form.
+	 * @param array              $args Arguments.
+	 * @return void
 	 */
 	public function tag_generator( $form, $args ) {
 		require dirname( __FILE__ ) . '/../../views/issuer-tag-generator.php';

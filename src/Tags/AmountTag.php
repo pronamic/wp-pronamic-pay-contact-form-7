@@ -10,6 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 
+use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\Parser;
 use function wpcf7_form_controls_class;
 use function wpcf7_format_atts;
@@ -64,13 +65,13 @@ class AmountTag {
 		$value = (string) reset( $tag->values );
 
 		$attributes = array(
-			'class'        => $tag->get_class_option( $class ),
-			'id'           => $tag->get_id_option(),
-			'name'         => $tag->name,
-			'size'         => $tag->get_size_option( '8' ),
-			'tabindex'     => $tag->get_option( 'tabindex', 'signed_int', true ),
-			'type'         => 'text',
-			'value'        => wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
+			'class'    => $tag->get_class_option( $class ),
+			'id'       => $tag->get_id_option(),
+			'name'     => $tag->name,
+			'size'     => $tag->get_size_option( '8' ),
+			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
+			'type'     => 'text',
+			'value'    => wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
 		);
 
 		if ( $tag->has_option( 'readonly' ) ) {
@@ -87,6 +88,12 @@ class AmountTag {
 		return $html;
 	}
 
+	/**
+	 * Parse value.
+	 *
+	 * @param string $value Value to parse.
+	 * @return Money|null
+	 */
 	public static function parse_value( $value ) {
 		$parser = new Parser();
 
@@ -140,7 +147,7 @@ class AmountTag {
 			array(
 				'invalid_pronamic_pay_amount' => array(
 					'description' => __( 'Input amount is invalid.', 'pronamic_ideal' ),
-					'default'     => __( 'The input amount is invalid.', 'pronamic_ideal' )
+					'default'     => __( 'The input amount is invalid.', 'pronamic_ideal' ),
 				),
 			)
 		);
