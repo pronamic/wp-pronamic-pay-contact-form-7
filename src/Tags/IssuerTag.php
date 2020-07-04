@@ -35,9 +35,11 @@ class IssuerTag {
 	 */
 	public function __construct() {
 		\wpcf7_add_form_tag( self::TAG, array( $this, 'handler' ), true );
+		\wpcf7_add_form_tag( self::TAG . '*', array( $this, 'handler' ), true );
 
 		// Filters.
 		\add_filter( 'wpcf7_validate_' . self::TAG, array( $this, 'validate' ), 10, 2 );
+		\add_filter( 'wpcf7_validate_' . self::TAG . '*', array( $this, 'validate' ), 10, 2 );
 
 		// Actions.
 		\add_action( 'wpcf7_admin_init', array( $this, 'add_tag_generator' ), 60 );

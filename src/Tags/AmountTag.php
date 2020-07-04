@@ -36,9 +36,11 @@ class AmountTag {
 	 */
 	public function __construct() {
 		\wpcf7_add_form_tag( self::TAG, array( $this, 'handler' ), true );
+		\wpcf7_add_form_tag( self::TAG . '*', array( $this, 'handler' ), true );
 
 		// Filters.
 		\add_filter( 'wpcf7_validate_' . self::TAG, array( $this, 'validate' ), 10, 2 );
+		\add_filter( 'wpcf7_validate_' . self::TAG . '*', array( $this, 'validate' ), 10, 2 );
 		\add_filter( 'wpcf7_messages', array( $this, 'messages' ) );
 	}
 
