@@ -10,16 +10,18 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
-use Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags\AmountTag;
-use WPCF7_ContactForm;
+use Pronamic\WordPress\Pay\Core\Gateway;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
-use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
-use Pronamic\WordPress\Pay\Payments\PaymentLines;
-use Pronamic\WordPress\Pay\Subscriptions\Subscription;
+use WPCF7_ContactForm;
+use WPCF7_FormTagsManager;
+use WPCF7_Pipes;
+use WPCF7_Submission;
 
 /**
  * Pronamic
@@ -30,23 +32,129 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  */
 class Pronamic {
 	/**
+	 * Get default gateway.
+	 *
+	 * @return Gateway|null
+	 */
+	public static function get_default_gateway() {
+		$config_id = \get_option( 'pronamic_pay_config_id' );
+
+		$gateway = Plugin::get_gateway( $config_id );
+
+		return $gateway;
+	}
+
+	/**
+	 * Get submission value.
+	 *
+	 * @param string $type Type to search for.
+	 * @return mixed
+	 */
+	public static function get_submission_value( $type ) {
+		$result = null;
+
+		$prefixed_type = 'pronamic_pay_' . $type;
+
+		// @link https://contactform7.com/tag-syntax/
+		$tags = WPCF7_FormTagsManager::get_instance()->get_scanned_tags();
+
+		foreach ( $tags as $tag ) {
+			// Check if tag base type equals requested tag or tag has requested option.
+			if ( ! \in_array( $tag->basetype, array( $type, $prefixed_type ), true ) && ! $tag->has_option( $prefixed_type ) ) {
+				continue;
+			}
+
+			$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
+
+			if ( 'checkbox' === $tag->basetype ) {
+				$value = \filter_input( \INPUT_POST, $tag->name, \FILTER_DEFAULT, \FILTER_REQUIRE_ARRAY );
+			}
+
+			// Check empty value.
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			$values = (array) $value;
+
+			// Loop values.
+			foreach ( $values as $value ) {
+				/*
+				 * Try to get value from piped field values.
+				 *
+				 * @link https://contactform7.com/selectable-recipient-with-pipes/
+				 */
+				if ( $tag->pipes instanceof WPCF7_Pipes ) {
+					$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+
+					$pipe_value = \array_search( $value, $pipes, true );
+
+					if ( false !== $pipe_value ) {
+						$value = $pipe_value;
+					}
+				}
+
+				// Parse value.
+				switch ( $type ) {
+					case 'amount':
+						// Handle free text input.
+						if ( $tag->has_option( 'free_text' ) && end( $tag->values ) === $value ) {
+							$free_text_name = sprintf(
+								'_wpcf7_%1$s_free_text_%2$s',
+								$tag->basetype,
+								$tag->name
+							);
+
+							$value = trim( \filter_input( \INPUT_POST, $free_text_name, \FILTER_SANITIZE_STRING ) );
+						}
+
+						$value = Tags\AmountTag::parse_value( $value );
+
+						// Set parsed value as result or add to existing money result.
+						if ( null !== $value ) {
+							$result = ( null === $result ? $value : $result->add( $value ) );
+						}
+
+						break;
+					default:
+						$result = $value;
+				}
+			}
+
+			// Prefer tag with option (`pronamic_pay_email`) over tag name match (e.g. `email`).
+			if ( $tag->has_option( $prefixed_type ) ) {
+				return $result;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Get Pronamic payment from Contact Form 7 form.
 	 *
-	 * @param WPCF7_ContactForm $form Contact Form 7 form object.
+	 * @param WPCF7_Submission $submission Contact Form 7 form submission.
 	 *
 	 * @return Payment
 	 */
-	public static function get_payment( WPCF7_ContactForm $form ) {
+	public static function get_submission_payment( WPCF7_Submission $submission ) {
+		$form = $submission->get_contact_form();
+
 		$payment = new Payment();
 
-		// Contact Form 7.
-		$amount = AmountTag::get_value( 'amount' );
+		$amount = self::get_submission_value( 'amount' );
 
 		if ( null === $amount ) {
 			return null;
 		}
 
-		$entry_id = \uniqid();
+		$gateway = self::get_default_gateway();
+
+		if ( null === $gateway ) {
+			return null;
+		}
+
+		$unique_id = \time();
 
 		// Title.
 		$title = sprintf(
@@ -54,20 +162,35 @@ class Pronamic {
 			__( 'Payment for %s', 'pronamic_ideal' ),
 			sprintf(
 				/* translators: %s: order id */
-				__( 'Contact Formk 7 Entry %s', 'pronamic_ideal' ),
-				$entry_id
+				__( 'Contact Form 7 Entry @ %s', 'pronamic_ideal' ),
+				$unique_id
 			)
 		);
 
+		// Description.
+		$description = self::get_submission_value( 'description' );
+
+		if ( null === $description ) {
+			$description = sprintf(
+				/* translators: %s: entry id */
+				__( 'Payment %s', 'pronamic_ideal' ),
+				$unique_id
+			);
+		}
+
+		// Payment method.
+		$payment_method = self::get_submission_value( 'method' );
+		$issuer         = self::get_submission_value( 'issuer' );
+
+		if ( empty( $payment_method ) && ( null !== $issuer || $gateway->payment_method_is_required() ) ) {
+			$payment_method = PaymentMethods::IDEAL;
+		}
+
 		$payment->title       = $title;
-		$payment->description = sprintf(
-			/* translators: %s: entry id */
-			__( 'Payment for %s', 'pronamic_ideal' ),
-			$entry_id
-		);
+		$payment->description = $description;
 		$payment->source      = 'contact-form-7';
-		$payment->source_id   = $entry_id;
-		$payment->issuer      = null;
+		$payment->method      = $payment_method;
+		$payment->issuer      = $issuer;
 
 		/*
 		 * Totals.
@@ -78,131 +201,58 @@ class Pronamic {
 			)
 		);
 
-		/*
-		 * Return.
-		 */
-		return $payment;
-
-		// @todo Set additional payment details.
-
 		// Contact.
 		$contact_name = new ContactName();
-		$contact_name->set_first_name( $memberpress_user->first_name );
-		$contact_name->set_last_name( $memberpress_user->last_name );
+		$contact_name->set_first_name( self::get_submission_value( 'first_name' ) );
+		$contact_name->set_last_name( self::get_submission_value( 'last_name' ) );
 
 		$customer = new Customer();
 		$customer->set_name( $contact_name );
-		$customer->set_email( $memberpress_user->user_email );
-		$customer->set_user_id( $memberpress_user->ID );
+		$customer->set_email( self::get_submission_value( 'email' ) );
 
 		$payment->set_customer( $customer );
 
 		/*
 		 * Address.
-		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprUser.php#L1191-L1216
 		 */
 		$address = new Address();
 
 		$address->set_name( $contact_name );
 
+		$billing_address  = clone $address;
+		$shipping_address = clone $address;
+
 		$address_fields = array(
-			'one'     => 'set_line_1',
-			'two'     => 'set_line_2',
-			'city'    => 'set_city',
-			'state'   => 'set_region',
-			'zip'     => 'set_postal_code',
-			'country' => 'set_country_code',
+			'line_1',
+			'line_2',
+			'city',
+			'region',
+			'postal_code',
+			'country_code',
+			'company_name',
+			'coc_number',
 		);
 
-		foreach ( $address_fields as $field => $function ) {
-			$value = $memberpress_user->address( $field, false );
+		foreach ( $address_fields as $field ) {
+			$billing_value  = self::get_submission_value( 'billing_address_' . $field );
+			$shipping_value = self::get_submission_value( 'shipping_address_' . $field );
+			$address_value  = self::get_submission_value( 'address_' . $field );
 
-			if ( empty( $value ) ) {
-				continue;
+			if ( ! empty( $billing_value ) || ! empty( $address_value ) ) {
+				call_user_func( array( $billing_address, 'set_' . $field ), empty( $billing_value ) ? $address_value : $billing_value );
 			}
 
-			call_user_func( array( $address, $function ), $value );
-		}
-
-		$payment->set_billing_address( $address );
-		$payment->set_shipping_address( $address );
-
-		/*
-		 * Subscription.
-		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprTransaction.php#L603-L618
-		 */
-		$payment->subscription = self::get_subscription( $form );
-
-		if ( $payment->subscription ) {
-			$payment->subscription_source_id = $form->subscription_id;
-
-			if ( $memberpress_subscription->in_trial() ) {
-				$payment->set_total_amount(
-					new TaxedMoney(
-						$memberpress_subscription->trial_amount,
-						MemberPress::get_currency(),
-						null, // Calculate tax value based on tax percentage.
-						$form->tax_rate
-					)
-				);
+			if ( ! empty( $shipping_value ) || ! empty( $address_value ) ) {
+				call_user_func( array( $shipping_address, 'set_' . $field ), empty( $shipping_value ) ? $address_value : $shipping_value );
 			}
 		}
 
+		$payment->set_billing_address( $billing_address );
+		$payment->set_shipping_address( $shipping_address );
+
 		/*
-		 * Lines.
+		 * Return.
 		 */
-		$payment->lines = new PaymentLines();
-
-		$line = $payment->lines->new_line();
-
-		$line->set_id( $memberpress_product->ID );
-		$line->set_name( $memberpress_product->post_title );
-		$line->set_quantity( 1 );
-		$line->set_unit_price( $payment->get_total_amount() );
-		$line->set_total_amount( $payment->get_total_amount() );
-		$line->set_product_url( get_permalink( $memberpress_product->ID ) );
-	}
-
-	/**
-	 * Get Pronamic subscription from Contact Form 7 form.
-	 *
-	 * @param WPCF7_ContactForm $form Contact Form 7 form object.
-	 *
-	 * @return Subscription|null
-	 */
-	public static function get_subscription( WPCF7_ContactForm $form ) {
-		$memberpress_product = $form->product();
-
-		if ( $memberpress_product->is_one_time_payment() ) {
-			return null;
-		}
-
-		$memberpress_subscription = $form->subscription();
-
-		if ( ! $memberpress_subscription ) {
-			return false;
-		}
-
-		// New subscription.
-		$subscription                  = new Subscription();
-		$subscription->interval        = $memberpress_product->period;
-		$subscription->interval_period = Core_Util::to_period( $memberpress_product->period_type );
-
-		// Frequency.
-		$limit_cycles_number = (int) $memberpress_subscription->limit_cycles_num;
-
-		if ( $memberpress_subscription->limit_cycles && $limit_cycles_number > 0 ) {
-			$subscription->frequency = $limit_cycles_number;
-		}
-
-		// Amount.
-		$subscription->set_total_amount(
-			new TaxedMoney(
-				$form->total,
-				MemberPress::get_currency()
-			)
-		);
-
-		return $subscription;
+		return $payment;
 	}
 }

@@ -1,9 +1,10 @@
 {
+	"esversion": 6,
 	"boss": true,
 	"curly": true,
 	"eqeqeq": true,
 	"eqnull": true,
-	"es3": true,
+	"es3": false,
 	"expr": true,
 	"immed": true,
 	"noarg": true,
