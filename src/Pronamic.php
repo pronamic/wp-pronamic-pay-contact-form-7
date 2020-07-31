@@ -172,7 +172,7 @@ class Pronamic {
 
 		if ( null === $description ) {
 			$description = sprintf(
-				/* translators: %s: entry id */
+				/* translators: %s: payment number */
 				__( 'Payment %s', 'pronamic_ideal' ),
 				$unique_id
 			);
