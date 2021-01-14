@@ -88,6 +88,8 @@ class Extension extends AbstractPluginIntegration {
 		// Actions.
 		\add_action( 'wpcf7_before_send_mail', array( $this, 'before_send_mail' ), 10, 3 );
 		\add_action( 'wpcf7_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		\add_action( 'wpcf7_mail_sent', array( $this, 'wpcf7_disabled_scripts_redirect' ) );
+		\add_action( 'wpcf7_mail_failed', array( $this, 'wpcf7_disabled_scripts_redirect' ) );
 
 		// Filters.
 		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
@@ -161,6 +163,29 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		\add_filter( 'wpcf7_ajax_json_echo', array( $this, 'feedback_response' ), 10, 2 );
+	}
+
+	/**
+	 * Redirect when loading Contact Form 7 scripts has been disabled.
+	 */
+	public function wpcf7_disabled_scripts_redirect() {
+		if ( ! \has_filter( 'wpcf7_load_js' ) ) {
+			return;
+		}
+
+		$load_js = \apply_filters( 'wpcf7_load_js', true );
+
+		if ( false !== $load_js ) {
+			return;
+		}
+
+		$feedback_args = $this->feedback_args;
+
+		if ( ! \array_key_exists( 'pronamic_pay_redirect_url', $feedback_args ) ) {
+			return;
+		}
+
+		\wp_redirect( $feedback_args['pronamic_pay_redirect_url'] );
 	}
 
 	/**
