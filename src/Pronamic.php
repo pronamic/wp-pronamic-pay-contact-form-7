@@ -138,16 +138,32 @@ class Pronamic {
 
 		$payment = new Payment();
 
+		// Check amount.
 		$amount = self::get_submission_value( 'amount' );
 
 		if ( null === $amount ) {
 			return null;
 		}
 
+		// Check gateway.
 		$gateway = self::get_default_gateway();
 
 		if ( null === $gateway ) {
 			return null;
+		}
+
+		// Check active payment method.
+		$payment_method = self::get_submission_value( 'method' );
+
+		if ( ! empty( $payment_method ) ) {
+			if ( ! PaymentMethods::is_active( $payment_method ) ) {
+				$payment_method = strtolower( $payment_method );
+			}
+
+			// Check lowercase payment method.
+			if ( ! PaymentMethods::is_active( $payment_method ) ) {
+				return null;
+			}
 		}
 
 		$unique_id = \time();
@@ -175,8 +191,7 @@ class Pronamic {
 		}
 
 		// Payment method.
-		$payment_method = self::get_submission_value( 'method' );
-		$issuer         = self::get_submission_value( 'issuer' );
+		$issuer = self::get_submission_value( 'issuer' );
 
 		if ( empty( $payment_method ) && ( null !== $issuer || $gateway->payment_method_is_required() ) ) {
 			$payment_method = PaymentMethods::IDEAL;
