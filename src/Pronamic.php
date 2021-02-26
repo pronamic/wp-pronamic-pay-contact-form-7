@@ -85,12 +85,28 @@ class Pronamic {
 				 * @link https://contactform7.com/selectable-recipient-with-pipes/
 				 */
 				if ( $tag->pipes instanceof WPCF7_Pipes ) {
-					$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+					// Make multidimensional array with pipe options by value.
+					$options = array();
 
-					$pipe_value = \array_search( $value, $pipes, true );
+					$labels = $tag->pipes->collect_befores();
 
-					if ( false !== $pipe_value ) {
-						$value = $pipe_value;
+					foreach ( $tag->pipes->collect_afters() as $key => $after ) {
+						// Make sure array for value exists.
+						if ( ! \array_key_exists( $after, $options ) ) {
+							$options[ $after ] = array();
+						}
+
+						// Add option to value array.
+						$options[ $after ][] = $labels[ $key ];
+					}
+
+					// Search for value in options.
+					foreach ( $options as $after => $labels ) {
+						if ( false !== \array_search( $value, $labels, true ) ) {
+							$value = $after;
+
+							break;
+						}
 					}
 				}
 
