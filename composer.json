@@ -31,6 +31,15 @@
 	"config": {
 		"sort-packages": true
 	},
+	"repositories":[
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org",
+			"only": [
+				"wpackagist-plugin/*"
+			]
+		}
+	],
 	"require": {
 		"php": ">=5.6.20",
 		"wp-pay/core": "^2.6"
@@ -46,7 +55,8 @@
 		"roots/wordpress": "^5.6",
 		"squizlabs/php_codesniffer": "^3.4",
 		"wp-coding-standards/wpcs": "^2.3",
-		"wp-phpunit/wp-phpunit": "^5.6"
+		"wp-phpunit/wp-phpunit": "^5.6",
+		"wpackagist-plugin/contact-form-7": "^5.4"
 	},
 	"scripts": {
 		"coveralls": "vendor/bin/php-coveralls -v",
