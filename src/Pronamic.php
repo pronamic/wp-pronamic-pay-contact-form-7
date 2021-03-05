@@ -59,8 +59,8 @@ class Pronamic {
 		$tags = WPCF7_FormTagsManager::get_instance()->get_scanned_tags();
 
 		foreach ( $tags as $tag ) {
-			// Check if tag base type equals requested tag or tag has requested option.
-			if ( ! \in_array( $tag->basetype, array( $type, $prefixed_type ), true ) && ! $tag->has_option( $prefixed_type ) ) {
+			// Check if tag base type or name is requested type or tag has requested type as option.
+			if ( ! \in_array( $tag->basetype, array( $type, $prefixed_type ), true ) && ! $tag->has_option( $prefixed_type ) && $prefixed_type !== $tag->name ) {
 				continue;
 			}
 
