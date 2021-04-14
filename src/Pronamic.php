@@ -55,12 +55,28 @@ class Pronamic {
 
 		$prefixed_type = 'pronamic_pay_' . $type;
 
+		// Hidden fields.
+		$hidden_fields = \filter_input( \INPUT_POST, '_wpcf7cf_hidden_group_fields' );
+
+		if ( ! empty( $hidden_fields ) ) {
+			$hidden_fields = \json_decode( stripslashes( $hidden_fields ) );
+		}
+
+		if ( ! \is_array( $hidden_fields ) ) {
+			$hidden_fields = array();
+		}
+
 		// @link https://contactform7.com/tag-syntax/
 		$tags = WPCF7_FormTagsManager::get_instance()->get_scanned_tags();
 
 		foreach ( $tags as $tag ) {
 			// Check if tag base type or name is requested type or tag has requested type as option.
 			if ( ! \in_array( $tag->basetype, array( $type, $prefixed_type ), true ) && ! $tag->has_option( $prefixed_type ) && $prefixed_type !== $tag->name ) {
+				continue;
+			}
+
+			// Check if field is not hidden.
+			if ( \in_array( $tag->name, $hidden_fields, true ) ) {
 				continue;
 			}
 
