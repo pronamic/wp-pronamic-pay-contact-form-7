@@ -3,7 +3,7 @@
  * Pronamic
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -55,12 +55,28 @@ class Pronamic {
 
 		$prefixed_type = 'pronamic_pay_' . $type;
 
+		// Hidden fields.
+		$hidden_fields = \filter_input( \INPUT_POST, '_wpcf7cf_hidden_group_fields' );
+
+		if ( ! empty( $hidden_fields ) ) {
+			$hidden_fields = \json_decode( stripslashes( $hidden_fields ) );
+		}
+
+		if ( ! \is_array( $hidden_fields ) ) {
+			$hidden_fields = array();
+		}
+
 		// @link https://contactform7.com/tag-syntax/
 		$tags = WPCF7_FormTagsManager::get_instance()->get_scanned_tags();
 
 		foreach ( $tags as $tag ) {
-			// Check if tag base type equals requested tag or tag has requested option.
-			if ( ! \in_array( $tag->basetype, array( $type, $prefixed_type ), true ) && ! $tag->has_option( $prefixed_type ) ) {
+			// Check if tag base type or name is requested type or tag has requested type as option.
+			if ( ! \in_array( $tag->basetype, array( $type, $prefixed_type ), true ) && ! $tag->has_option( $prefixed_type ) && $prefixed_type !== $tag->name ) {
+				continue;
+			}
+
+			// Check if field is not hidden.
+			if ( \in_array( $tag->name, $hidden_fields, true ) ) {
 				continue;
 			}
 
@@ -85,12 +101,28 @@ class Pronamic {
 				 * @link https://contactform7.com/selectable-recipient-with-pipes/
 				 */
 				if ( $tag->pipes instanceof WPCF7_Pipes ) {
-					$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+					// Make multidimensional array with pipe options by value.
+					$options = array();
 
-					$pipe_value = \array_search( $value, $pipes, true );
+					$labels = $tag->pipes->collect_befores();
 
-					if ( false !== $pipe_value ) {
-						$value = $pipe_value;
+					foreach ( $tag->pipes->collect_afters() as $key => $after ) {
+						// Make sure array for value exists.
+						if ( ! \array_key_exists( $after, $options ) ) {
+							$options[ $after ] = array();
+						}
+
+						// Add option to value array.
+						$options[ $after ][] = $labels[ $key ];
+					}
+
+					// Search for value in options.
+					foreach ( $options as $after => $labels ) {
+						if ( false !== \array_search( $value, $labels, true ) ) {
+							$value = $after;
+
+							break;
+						}
 					}
 				}
 
@@ -138,16 +170,32 @@ class Pronamic {
 
 		$payment = new Payment();
 
+		// Check amount.
 		$amount = self::get_submission_value( 'amount' );
 
 		if ( null === $amount ) {
 			return null;
 		}
 
+		// Check gateway.
 		$gateway = self::get_default_gateway();
 
 		if ( null === $gateway ) {
 			return null;
+		}
+
+		// Check active payment method.
+		$payment_method = self::get_submission_value( 'method' );
+
+		if ( ! empty( $payment_method ) ) {
+			if ( ! PaymentMethods::is_active( $payment_method ) ) {
+				$payment_method = strtolower( $payment_method );
+			}
+
+			// Check lowercase payment method.
+			if ( ! PaymentMethods::is_active( $payment_method ) ) {
+				return null;
+			}
 		}
 
 		$unique_id = \time();
@@ -175,8 +223,7 @@ class Pronamic {
 		}
 
 		// Payment method.
-		$payment_method = self::get_submission_value( 'method' );
-		$issuer         = self::get_submission_value( 'issuer' );
+		$issuer = self::get_submission_value( 'issuer' );
 
 		if ( empty( $payment_method ) && ( null !== $issuer || $gateway->payment_method_is_required() ) ) {
 			$payment_method = PaymentMethods::IDEAL;
