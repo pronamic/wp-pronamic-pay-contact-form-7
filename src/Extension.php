@@ -129,19 +129,17 @@ class Extension extends AbstractPluginIntegration {
 			return;
 		}
 
-		// Start payment.
-		$payment = Pronamic::get_submission_payment( $submission );
-
-		// Return on invalid payment.
-		if ( null === $payment ) {
-			return;
-		}
-
-		$payment->config_id = $config_id;
-
-		$error = null;
-
 		try {
+			// Start payment.
+			$payment = Pronamic::get_submission_payment( $submission );
+
+			// Return on invalid payment.
+			if ( null === $payment ) {
+				return;
+			}
+
+			$payment->config_id = $config_id;
+
 			$payment = Plugin::start_payment( $payment );
 
 			$this->feedback_args = array(
@@ -153,7 +151,7 @@ class Extension extends AbstractPluginIntegration {
 			$this->feedback_args = array(
 				'status'  => 'pronamic_pay_error',
 				'message' => sprintf(
-					'%s<br>%s',
+					'%s' . str_repeat( \PHP_EOL, 2 ) . '%s',
 					Plugin::get_default_error_message(),
 					$e->getMessage()
 				),
