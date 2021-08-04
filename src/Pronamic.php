@@ -13,7 +13,7 @@ namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 use Pronamic\WordPress\Pay\Core\Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
-use Pronamic\WordPress\Money\TaxedMoney;
+use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
@@ -238,11 +238,7 @@ class Pronamic {
 		/*
 		 * Totals.
 		 */
-		$payment->set_total_amount(
-			new TaxedMoney(
-				$amount->get_value()
-			)
-		);
+		$payment->set_total_amount( new Money( $amount->get_value() ) );
 
 		// Contact.
 		$contact_name = new ContactName();
