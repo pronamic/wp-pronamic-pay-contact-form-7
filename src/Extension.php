@@ -184,6 +184,8 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		\wp_redirect( $feedback_args['pronamic_pay_redirect_url'] );
+
+		exit;
 	}
 
 	/**

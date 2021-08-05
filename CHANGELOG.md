@@ -7,6 +7,12 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.0] - 2021-08-05
+- Updated to `pronamic/wp-pay-core`  version `3.0.0`.
+- Updated to `pronamic/wp-money`  version `2.0.0`.
+- Changed `TaxedMoney` to `Money`, no tax info.
+- Switched to `pronamic/wp-coding-standards`.
+
 ## [1.1.1] - 2021-06-18
 - Improved error handling on form submission.
 
@@ -29,7 +35,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2020-07-08
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.1.1...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/contact-form-7/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.1.1...2.0.0
 [1.1.1]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.0.3...1.1.0
 [1.0.3]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.0.2...1.0.3
