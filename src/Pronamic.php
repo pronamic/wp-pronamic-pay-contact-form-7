@@ -230,10 +230,11 @@ class Pronamic {
 		}
 
 		$payment->title       = $title;
-		$payment->description = $description;
 		$payment->source      = 'contact-form-7';
-		$payment->method      = $payment_method;
-		$payment->issuer      = $issuer;
+
+		$payment->set_description( $description );
+		$payment->set_payment_method( $payment_method );
+		$payment->set_meta( 'issuer', $issuer );
 
 		/*
 		 * Totals.
