@@ -10,7 +10,6 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
-use GFUserData;
 use Pronamic\WordPress\Pay\AbstractPluginIntegration;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
@@ -39,7 +38,7 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Feedback response args.
 	 *
-	 * @var array
+	 * @var array<string, string>
 	 */
 	private $feedback_args;
 
@@ -83,6 +82,8 @@ class Extension extends AbstractPluginIntegration {
 
 	/**
 	 * Initialize
+	 *
+	 * @return void
 	 */
 	public function init() {
 		// Actions.
@@ -99,6 +100,8 @@ class Extension extends AbstractPluginIntegration {
 
 	/**
 	 * Register tags.
+	 *
+	 * @return void
 	 */
 	public function register_tags() {
 		// Amount tag.
@@ -160,11 +163,13 @@ class Extension extends AbstractPluginIntegration {
 			$abort = true;
 		}
 
-		\add_filter( 'wpcf7_ajax_json_echo', array( $this, 'feedback_response' ), 10, 2 );
+		\add_filter( 'wpcf7_feedback_response', array( $this, 'feedback_response' ), 10, 2 );
 	}
 
 	/**
 	 * Redirect when loading Contact Form 7 scripts has been disabled.
+	 *
+	 * @return void
 	 */
 	public function wpcf7_disabled_scripts_redirect() {
 		if ( ! \has_filter( 'wpcf7_load_js' ) ) {
@@ -191,10 +196,9 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Feedback response.
 	 *
-	 * @param array $response REST API feedback response.
-	 * @param array $result   Form submit result.
-	 *
-	 * @return array
+	 * @param array<string, mixed> $response REST API feedback response.
+	 * @param array<string, mixed> $result   Form submit result.
+	 * @return array<string, string>
 	 */
 	public function feedback_response( $response, $result ) {
 		$response = \wp_parse_args( $this->feedback_args, $response );
@@ -204,6 +208,8 @@ class Extension extends AbstractPluginIntegration {
 
 	/**
 	 * Enqueue scripts.
+	 *
+	 * @return void
 	 */
 	public function enqueue_scripts() {
 		\wp_register_script(
@@ -222,7 +228,6 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @param string  $text    Source text.
 	 * @param Payment $payment Payment.
-	 *
 	 * @return string
 	 */
 	public function source_text( $text, Payment $payment ) {
@@ -234,7 +239,6 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @param string  $description Description.
 	 * @param Payment $payment     Payment.
-	 *
 	 * @return string
 	 */
 	public function source_description( $description, Payment $payment ) {
@@ -246,7 +250,6 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @param string       $text         Source text.
 	 * @param Subscription $subscription Subscription.
-	 *
 	 * @return string
 	 */
 	public function subscription_source_text( $text, Subscription $subscription ) {
@@ -258,7 +261,6 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @param string       $description  Description.
 	 * @param Subscription $subscription Subscription.
-	 *
 	 * @return string
 	 */
 	public function subscription_source_description( $description, Subscription $subscription ) {

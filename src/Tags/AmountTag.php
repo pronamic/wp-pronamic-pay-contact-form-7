@@ -12,11 +12,8 @@ namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\Parser;
-use function wpcf7_form_controls_class;
-use function wpcf7_format_atts;
-use function wpcf7_get_hangover;
-use function wpcf7_get_validation_error;
-use function wpcf7_support_html5;
+use WPCF7_FormTag;
+use WPCF7_Validation;
 
 /**
  * Amount tag.
@@ -47,8 +44,7 @@ class AmountTag {
 	/**
 	 * Form tag handler.
 	 *
-	 * @param object $tag Form tag.
-	 *
+	 * @param WPCF7_FormTag $tag Form tag.
 	 * @return string
 	 */
 	public function handler( $tag ) {
@@ -56,9 +52,9 @@ class AmountTag {
 			return '';
 		}
 
-		$error = wpcf7_get_validation_error( $tag->name );
+		$error = \wpcf7_get_validation_error( $tag->name );
 
-		$class = wpcf7_form_controls_class( $tag->type, 'wpcf7-text' );
+		$class = \wpcf7_form_controls_class( $tag->type, 'wpcf7-text' );
 
 		if ( $error ) {
 			$class .= ' wpcf7-not-valid';
@@ -73,7 +69,7 @@ class AmountTag {
 			'size'     => $tag->get_size_option( '8' ),
 			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
 			'type'     => 'text',
-			'value'    => wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
+			'value'    => \wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
 		);
 
 		if ( $tag->has_option( 'readonly' ) ) {
@@ -83,7 +79,7 @@ class AmountTag {
 		$html = \sprintf(
 			'<span class="wpcf7-form-control-wrap %1$s"><input %2$s>%3$s</span>',
 			\sanitize_html_class( $tag->name ),
-			wpcf7_format_atts( $attributes ),
+			\wpcf7_format_atts( $attributes ),
 			$error
 		);
 
@@ -111,17 +107,16 @@ class AmountTag {
 	/**
 	 * Validate field input.
 	 *
-	 * @param object $result Validation result.
-	 * @param object $tag    Form tag.
-	 *
-	 * @return object
+	 * @param WPCF7_Validation $result Validation result.
+	 * @param WPCF7_FormTag    $tag    Form tag.
+	 * @return WPCF7_Validation
 	 */
 	public function validate( $result, $tag ) {
 		$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
 
 		// Check required.
 		if ( $tag->is_required() && empty( $value ) ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
+			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_required' ) );
 
 			return $result;
 		}
@@ -130,7 +125,7 @@ class AmountTag {
 		$amount = self::parse_value( $value );
 
 		if ( null === $amount ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_pronamic_pay_amount' ) );
+			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_pronamic_pay_amount' ) );
 		}
 
 		return $result;
@@ -139,12 +134,11 @@ class AmountTag {
 	/**
 	 * Contact Form 7 messages.
 	 *
-	 * @param array $messages Messages.
-	 *
-	 * @return array
+	 * @param array[] $messages Messages.
+	 * @return array[]
 	 */
 	public function messages( $messages ) {
-		return array_merge(
+		return \array_merge(
 			$messages,
 			array(
 				'invalid_pronamic_pay_amount' => array(

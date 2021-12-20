@@ -23,7 +23,6 @@ class ContactForm7Dependency extends Dependency {
 	/**
 	 * Is met.
 	 *
-	 * @link
 	 * @return bool True if dependency is met, false otherwise.
 	 */
 	public function is_met() {

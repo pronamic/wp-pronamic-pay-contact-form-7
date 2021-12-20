@@ -12,11 +12,8 @@ namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
-use function wpcf7_form_controls_class;
-use function wpcf7_format_atts;
-use function wpcf7_get_hangover;
-use function wpcf7_get_validation_error;
-use function wpcf7_support_html5;
+use WPCF7_FormTag;
+use WPCF7_Validation;
 
 /**
  * Payment method tag.
@@ -50,8 +47,7 @@ class PaymentMethodTag {
 	/**
 	 * Form tag handler.
 	 *
-	 * @param object $tag Form tag.
-	 *
+	 * @param WPCF7_FormTag $tag Form tag.
 	 * @return string
 	 */
 	public function handler( $tag ) {
@@ -66,9 +62,9 @@ class PaymentMethodTag {
 			return '';
 		}
 
-		$error = wpcf7_get_validation_error( $tag->name );
+		$error = \wpcf7_get_validation_error( $tag->name );
 
-		$class = wpcf7_form_controls_class( $tag->type, 'wpcf7-select' );
+		$class = \wpcf7_form_controls_class( $tag->type, 'wpcf7-select' );
 
 		if ( $error ) {
 			$class .= ' wpcf7-not-valid';
@@ -81,7 +77,7 @@ class PaymentMethodTag {
 			'id'       => $tag->get_id_option(),
 			'name'     => $tag->name,
 			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
-			'value'    => wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
+			'value'    => \wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
 		);
 
 		if ( $tag->has_option( 'readonly' ) ) {
@@ -101,7 +97,11 @@ class PaymentMethodTag {
 		$pipes = array();
 
 		if ( $tag->pipes instanceof \WPCF7_Pipes ) {
-			$pipes = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+			$combined = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+
+			if ( false !== $combined ) {
+				$pipes = $combined;
+			}
 		}
 
 		foreach ( $method_options as $value => $label ) {
@@ -113,10 +113,10 @@ class PaymentMethodTag {
 				continue;
 			}
 
-			$options[] = sprintf(
+			$options[] = \sprintf(
 				'<option value="%1$s" %2$s>%3$s</option>',
 				\esc_attr( $value ),
-				selected( $attributes['value'], $value, false ),
+				\selected( $attributes['value'], $value, false ),
 				\esc_html( $label )
 			);
 		}
@@ -124,8 +124,8 @@ class PaymentMethodTag {
 		$html = \sprintf(
 			'<span class="wpcf7-form-control-wrap %1$s"><select %2$s>%3$s</select>%4$s</span>',
 			\sanitize_html_class( $tag->name ),
-			wpcf7_format_atts( $attributes ),
-			implode( '', $options ),
+			\wpcf7_format_atts( $attributes ),
+			\implode( '', $options ),
 			$error
 		);
 
@@ -136,11 +136,10 @@ class PaymentMethodTag {
 	 * Get value.
 	 *
 	 * @param string $name Field name.
-	 *
 	 * @return string|null
 	 */
 	public static function get_value( $name ) {
-		$value = trim( \filter_input( \INPUT_POST, $name, \FILTER_SANITIZE_STRING ) );
+		$value = \trim( \filter_input( \INPUT_POST, $name, \FILTER_SANITIZE_STRING ) );
 
 		if ( empty( $value ) ) {
 			return null;
@@ -152,17 +151,16 @@ class PaymentMethodTag {
 	/**
 	 * Validate field input.
 	 *
-	 * @param object $result Validation result.
-	 * @param object $tag    Form tag.
-	 *
-	 * @return object
+	 * @param WPCF7_Validation $result Validation result.
+	 * @param WPCF7_FormTag    $tag    Form tag.
+	 * @return WPCF7_Validation
 	 */
 	public function validate( $result, $tag ) {
-		$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
+		$value = \trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
 
 		// Check required.
 		if ( $tag->is_required() && empty( $value ) ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_required' ) );
+			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_required' ) );
 
 			return $result;
 		}
@@ -171,7 +169,7 @@ class PaymentMethodTag {
 		$gateway = Pronamic::get_default_gateway();
 
 		if ( null !== $gateway && $gateway->payment_method_is_required() && empty( $value ) ) {
-			$result->invalidate( $tag, wpcf7_get_message( 'invalid_pronamic_pay_method_required' ) );
+			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_pronamic_pay_method_required' ) );
 
 			return $result;
 		}
@@ -182,12 +180,11 @@ class PaymentMethodTag {
 	/**
 	 * Contact Form 7 messages.
 	 *
-	 * @param array $messages Messages.
-	 *
-	 * @return array
+	 * @param array[] $messages Messages.
+	 * @return array[]
 	 */
 	public function messages( $messages ) {
-		return array_merge(
+		return \array_merge(
 			$messages,
 			array(
 				'invalid_pronamic_pay_method_required' => array(
@@ -212,11 +209,11 @@ class PaymentMethodTag {
 	/**
 	 * Tag generator.
 	 *
-	 * @param \WPCF7_ContactForm $form Contact form.
-	 * @param array              $args Arguments.
+	 * @param \WPCF7_ContactForm   $form Contact form.
+	 * @param array<string, mixed> $args Arguments.
 	 * @return void
 	 */
 	public function tag_generator( $form, $args ) {
-		require dirname( __FILE__ ) . '/../../views/payment-method-tag-generator.php';
+		require \dirname( __FILE__ ) . '/../../views/payment-method-tag-generator.php';
 	}
 }
