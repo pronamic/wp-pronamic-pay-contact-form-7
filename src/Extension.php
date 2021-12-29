@@ -15,6 +15,7 @@ use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
 use WPCF7_ContactForm;
+use WPCF7_MailTag;
 use WPCF7_Submission;
 
 /**
@@ -41,6 +42,13 @@ class Extension extends AbstractPluginIntegration {
 	 * @var array<string, string>
 	 */
 	private $feedback_args;
+
+	/**
+	 * Payment.
+	 *
+	 * @var Payment|null
+	 */
+	private $payment;
 
 	/**
 	 * Construct Contact Form 7 plugin integration.
@@ -94,6 +102,8 @@ class Extension extends AbstractPluginIntegration {
 
 		// Filters.
 		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
+		\add_filter( 'wpcf7_collect_mail_tags', array( $this, 'collect_mail_tags' ) );
+		\add_filter( 'wpcf7_mail_tag_replaced', array( $this, 'replace_mail_tags' ), 10, 4 );
 
 		$this->register_tags();
 	}
@@ -144,6 +154,8 @@ class Extension extends AbstractPluginIntegration {
 			$payment->config_id = $config_id;
 
 			$payment = Plugin::start_payment( $payment );
+
+			$this->payment = $payment;
 
 			$this->feedback_args = array(
 				'status'                    => 'pronamic_pay_redirect',
@@ -221,6 +233,63 @@ class Extension extends AbstractPluginIntegration {
 		);
 
 		\wp_enqueue_script( 'pronamic-pay-contact-form-7' );
+	}
+
+	/**
+	 * Collect mail tags.
+	 *
+	 * @param string[]|null $mail_tags Mail tags.
+	 * @return string[]
+	 */
+	public function collect_mail_tags( $mail_tags = null ) {
+		if ( ! \is_array( $mail_tags ) ) {
+			$mail_tags = array();
+		}
+
+		$mail_tags = \array_merge(
+			$mail_tags,
+			array(
+				'pronamic_payment_id',
+				'pronamic_transaction_id',
+			)
+		);
+
+		return $mail_tags;
+	}
+
+	/**
+	 * Replace mail tags.
+	 *
+	 * @param string        $replaced  Replaced text.
+	 * @param string|null   $submitted Submitted value.
+	 * @param bool          $html      Whether HTML can be used in replaced text.
+	 * @param WPCF7_MailTag $mail_tag  The mail tag.
+	 * @return string
+	 */
+	public function replace_mail_tags( $replaced, $submitted, $html, $mail_tag ) {
+		// Default replacements.
+		$mail_tags = $this->collect_mail_tags();
+
+		$replacements = \array_fill_keys( \array_values( $mail_tags ), '' );
+
+		// Payment replacements.
+		if ( $this->payment instanceof Payment ) {
+			$payment = $this->payment;
+
+			$replacements = array(
+				'pronamic_payment_id'     => $payment->get_id(),
+				'pronamic_transaction_id' => $payment->get_transaction_id(),
+			);
+		}
+
+		// Replace.
+		$tag_name = $mail_tag->tag_name();
+
+		if ( \array_key_exists( $tag_name, $replacements ) ) {
+			$replaced = (string) $replacements[ $tag_name ];
+		}
+
+		return $replaced;
 	}
 
 	/**
