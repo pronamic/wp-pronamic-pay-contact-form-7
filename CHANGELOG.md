@@ -8,7 +8,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 -
 
 ## [3.0.0] - 2022-01-10
+### Chnaged
 - Updated to https://github.com/pronamic/wp-pay-core/releases/tag/4.0.0.
+- Added mail tags `pronamic_payment_id` and `pronamic_transaction_id`.
 
 ## [2.0.0] - 2021-08-05
 - Updated to `pronamic/wp-pay-core`  version `3.0.0`.
