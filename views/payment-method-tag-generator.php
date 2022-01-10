@@ -3,13 +3,17 @@
  * Payment method tag generator.
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\ContactForm7
  */
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
+
+if ( ! isset( $args ) ) {
+	$args = array();
+}
 
 $args = wp_parse_args( $args, array() );
 
@@ -127,7 +131,7 @@ $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-con
 </div>
 
 <div class="insert-box">
-	<input type="text" name="<?php echo esc_attr( self::TAG ); ?>" class="tag code" readonly="readonly" onfocus="this.select()">
+	<input type="text" name="pronamic_pay_method" class="tag code" readonly="readonly" onfocus="this.select()">
 
 	<div class="submitbox">
 		<input type="button" class="button button-primary insert-tag" value="<?php echo esc_attr( __( 'Insert Tag', 'pronamic_ideal' ) ); ?>">

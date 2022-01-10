@@ -1,4 +1,5 @@
 /* jshint node:true */
+/* eslint-env node */
 module.exports = function( grunt ) {
 	require( 'load-grunt-tasks' )( grunt );
 

@@ -43,7 +43,7 @@
 	"require": {
 		"php": ">=5.6.20",
 		"ext-json": "*",
-		"wp-pay/core": "^3.0"
+		"wp-pay/core": "^4.0"
 	},
 	"require-dev": {
 		"bamarni/composer-bin-plugin": "^1.4",
@@ -51,9 +51,10 @@
 		"phpmd/phpmd": "^2.7",
 		"phpunit/phpunit": "^5.7 || ^6.0",
 		"pronamic/wp-coding-standards": "^1.0",
-		"roots/wordpress": "^5.6",
-		"wp-phpunit/wp-phpunit": "^5.6",
-		"wpackagist-plugin/contact-form-7": "^5.4"
+		"roots/wordpress": "^5.8",
+		"wp-phpunit/wp-phpunit": "^5.8",
+		"wpackagist-plugin/contact-form-7": "^5.4",
+		"yoast/phpunit-polyfills": "^1.0"
 	},
 	"scripts": {
 		"coveralls": "vendor/bin/php-coveralls -v",

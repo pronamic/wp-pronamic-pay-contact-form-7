@@ -3,7 +3,7 @@
  * Contact Form 7 Dependency
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\ContactForm7
  */
@@ -23,7 +23,6 @@ class ContactForm7Dependency extends Dependency {
 	/**
 	 * Is met.
 	 *
-	 * @link
 	 * @return bool True if dependency is met, false otherwise.
 	 */
 	public function is_met() {

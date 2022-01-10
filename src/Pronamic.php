@@ -3,7 +3,7 @@
  * Pronamic
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -18,7 +18,6 @@ use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Payments\Payment;
-use WPCF7_ContactForm;
 use WPCF7_FormTagsManager;
 use WPCF7_Pipes;
 use WPCF7_Submission;
@@ -162,8 +161,7 @@ class Pronamic {
 	 * Get Pronamic payment from Contact Form 7 form.
 	 *
 	 * @param WPCF7_Submission $submission Contact Form 7 form submission.
-	 *
-	 * @return Payment
+	 * @return Payment|null
 	 */
 	public static function get_submission_payment( WPCF7_Submission $submission ) {
 		$form = $submission->get_contact_form();
@@ -229,15 +227,14 @@ class Pronamic {
 			$payment_method = PaymentMethods::IDEAL;
 		}
 
-		$payment->title       = $title;
-		$payment->description = $description;
-		$payment->source      = 'contact-form-7';
-		$payment->method      = $payment_method;
-		$payment->issuer      = $issuer;
+		$payment->title = $title;
 
-		/*
-		 * Totals.
-		 */
+		$payment->set_description( $description );
+		$payment->set_payment_method( $payment_method );
+		$payment->set_meta( 'issuer', $issuer );
+		$payment->set_source( 'contact-form-7' );
+
+		// Total amount.
 		$payment->set_total_amount( new Money( $amount->get_value() ) );
 
 		// Contact.
@@ -278,11 +275,19 @@ class Pronamic {
 			$address_value  = self::get_submission_value( 'address_' . $field );
 
 			if ( ! empty( $billing_value ) || ! empty( $address_value ) ) {
-				call_user_func( array( $billing_address, 'set_' . $field ), empty( $billing_value ) ? $address_value : $billing_value );
+				$callback = array( $billing_address, 'set_' . $field );
+
+				if ( \is_callable( $callback ) ) {
+					call_user_func( $callback, empty( $billing_value ) ? $address_value : $billing_value );
+				}
 			}
 
 			if ( ! empty( $shipping_value ) || ! empty( $address_value ) ) {
-				call_user_func( array( $shipping_address, 'set_' . $field ), empty( $shipping_value ) ? $address_value : $shipping_value );
+				$callback = array( $shipping_address, 'set_' . $field );
+
+				if ( \is_callable( $callback ) ) {
+					call_user_func( $callback, empty( $shipping_value ) ? $address_value : $shipping_value );
+				}
 			}
 		}
 
