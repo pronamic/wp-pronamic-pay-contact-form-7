@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.0.0] - 2022-01-10
+- Updated to https://github.com/pronamic/wp-pay-core/releases/tag/4.0.0.
+
 ## [2.0.0] - 2021-08-05
 - Updated to `pronamic/wp-pay-core`  version `3.0.0`.
 - Updated to `pronamic/wp-money`  version `2.0.0`.
@@ -35,7 +38,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2020-07-08
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/contact-form-7/compare/2.0.0...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/contact-form-7/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/wp-pay-extensions/contact-form-7/compare/2.0.0...3.0.0
 [2.0.0]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.1.1...2.0.0
 [1.1.1]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/wp-pay-extensions/contact-form-7/compare/1.0.3...1.1.0
