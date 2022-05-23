@@ -79,7 +79,7 @@ class Pronamic {
 				continue;
 			}
 
-			$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
+			$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING, [ 'flags' => \FILTER_FLAG_NO_ENCODE_QUOTES ] ) );
 
 			if ( 'checkbox' === $tag->basetype ) {
 				$value = \filter_input( \INPUT_POST, $tag->name, \FILTER_DEFAULT, \FILTER_REQUIRE_ARRAY );
@@ -117,8 +117,6 @@ class Pronamic {
 
 					// Search for value in options.
 					foreach ( $options as $after => $labels ) {
-						$value = \html_entity_decode( $value, \ENT_QUOTES );
-
 						if ( false !== \array_search( $value, $labels, true ) ) {
 							$value = $after;
 
