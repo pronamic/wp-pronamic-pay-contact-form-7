@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
+use Pronamic\WordPress\Pay\Util;
 use WPCF7_FormTag;
 use WPCF7_Validation;
 
@@ -89,24 +90,11 @@ class IssuerTag {
 			return '';
 		}
 
-		$options = array(
-			'<option></option>',
-		);
-
-		foreach ( $issuer_options[0]['options'] as $value => $label ) {
-			$options[] = sprintf(
-				'<option value="%1$s" %2$s>%3$s</option>',
-				\esc_attr( $value ),
-				\selected( $attributes['value'], $value, false ),
-				\esc_html( $label )
-			);
-		}
-
 		$html = \sprintf(
 			'<span class="wpcf7-form-control-wrap %1$s"><select %2$s>%3$s</select>%4$s</span>',
 			\sanitize_html_class( $tag->name ),
 			\wpcf7_format_atts( $attributes ),
-			\implode( '', $options ),
+			Util::select_options_grouped( $issuer_options, $attributes['value'] ),
 			$error
 		);
 
