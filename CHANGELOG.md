@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.0.3] - 2022-06-03
+### Fixed
+- Fix iDEAL bank select field when bank options are grouped (for example by country) by payment service provider. ([#2](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/2))
+
 ## [3.0.2] - 2022-05-30
 ### Fixed
 - Fix getting submission value from select option with quotes. ([#1](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/1))
@@ -47,7 +51,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2020-07-08
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/contact-form-7/compare/3.0.2...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/contact-form-7/compare/3.0.3...HEAD
+[3.0.3]: https://github.com/wp-pay-extensions/contact-form-7/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/wp-pay-extensions/contact-form-7/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/wp-pay-extensions/contact-form-7/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/wp-pay-extensions/contact-form-7/compare/2.0.0...3.0.0
