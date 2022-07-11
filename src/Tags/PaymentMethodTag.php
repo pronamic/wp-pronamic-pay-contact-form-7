@@ -165,15 +165,6 @@ class PaymentMethodTag {
 			return $result;
 		}
 
-		// Check if gateway requires payment method.
-		$gateway = Pronamic::get_default_gateway();
-
-		if ( null !== $gateway && $gateway->payment_method_is_required() && empty( $value ) ) {
-			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_pronamic_pay_method_required' ) );
-
-			return $result;
-		}
-
 		return $result;
 	}
 
