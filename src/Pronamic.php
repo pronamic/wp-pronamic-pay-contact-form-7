@@ -223,10 +223,6 @@ class Pronamic {
 		// Payment method.
 		$issuer = self::get_submission_value( 'issuer' );
 
-		if ( empty( $payment_method ) && ( null !== $issuer || $gateway->payment_method_is_required() ) ) {
-			$payment_method = PaymentMethods::IDEAL;
-		}
-
 		$payment->title = $title;
 
 		$payment->set_description( $description );
