@@ -85,8 +85,6 @@ class PaymentMethodTag {
 		}
 
 		// Payment method options.
-		$method_options = $gateway->get_payment_method_field_options();
-
 		$options = array();
 
 		/*
@@ -104,10 +102,15 @@ class PaymentMethodTag {
 			}
 		}
 
-		foreach ( $method_options as $value => $label ) {
-			if ( PaymentMethods::is_direct_debit_method( $value ) ) {
-				continue;
-			}
+		$payment_methods = $gateway->gat_payment_methods(
+			[
+				'status' => [ '', 'active' ],
+			]
+		);
+
+		foreach ( $payment_methods as $payment_method ) {
+			$value = $payment_method->get_id();
+			$label = $payment_method->get_name();
 
 			if ( ! empty( $tag->values ) && ! \array_key_exists( $value, $pipes ) ) {
 				continue;
