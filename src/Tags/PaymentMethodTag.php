@@ -85,8 +85,6 @@ class PaymentMethodTag {
 		}
 
 		// Payment method options.
-		$method_options = $gateway->get_payment_method_field_options();
-
 		$options = array();
 
 		/*
@@ -104,10 +102,15 @@ class PaymentMethodTag {
 			}
 		}
 
-		foreach ( $method_options as $value => $label ) {
-			if ( PaymentMethods::is_direct_debit_method( $value ) ) {
-				continue;
-			}
+		$payment_methods = $gateway->gat_payment_methods(
+			[
+				'status' => [ '', 'active' ],
+			]
+		);
+
+		foreach ( $payment_methods as $payment_method ) {
+			$value = $payment_method->get_id();
+			$label = $payment_method->get_name();
 
 			if ( ! empty( $tag->values ) && ! \array_key_exists( $value, $pipes ) ) {
 				continue;
@@ -161,15 +164,6 @@ class PaymentMethodTag {
 		// Check required.
 		if ( $tag->is_required() && empty( $value ) ) {
 			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_required' ) );
-
-			return $result;
-		}
-
-		// Check if gateway requires payment method.
-		$gateway = Pronamic::get_default_gateway();
-
-		if ( null !== $gateway && $gateway->payment_method_is_required() && empty( $value ) ) {
-			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_pronamic_pay_method_required' ) );
 
 			return $result;
 		}

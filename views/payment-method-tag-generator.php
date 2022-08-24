@@ -22,6 +22,22 @@ $description = __( 'Generate a tag for a payment method field. %1$s requires a f
 
 $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-contact-form-7-to-pronamic-pay/', 'pronamic_ideal' ), __( 'How to connect Contact Form 7 to Pronamic Pay', 'pronamic_ideal' ) );
 
+/**
+ * Payment method options.
+ */
+$payment_methods = [];
+
+$gateway = Pronamic::get_default_gateway();
+
+if ( null !== $gateway ) {
+	$payment_methods = $gateway->gat_payment_methods(
+		[
+			'status' => [ '', 'active' ],
+		]
+	);
+}
+
+
 ?>
 <div class="control-box">
 	<fieldset>
@@ -77,31 +93,29 @@ $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-con
 								<?php echo esc_html( __( 'Payment Methods', 'pronamic_ideal' ) ); ?>
 							</legend>
 
-							<?php
+							<?php foreach ( $payment_methods as $payment_method ) : ?>
 
-							// Get gateway.
-							$gateway = Pronamic::get_default_gateway();
+								<label>
+									<?php
 
-							if ( null !== $gateway ) {
-								// Payment method options.
-								$method_options = $gateway->get_payment_method_field_options();
+									$name = \sprintf(
+										'%s|%s',
+										$payment_method->get_name(),
+										$payment_method->get_id()
+									);
 
-								foreach ( $method_options as $value => $label ) {
-									if ( PaymentMethods::is_direct_debit_method( $value ) ) {
-										continue;
-									}
+									printf(
+										'<input type="checkbox" name="%s" class="option"> %s',
+										esc_attr( $name ),
+										esc_html( $payment_method->get_name() )
+									);
 
 									?>
 
-									<label>
-										<input type="checkbox" name='"<?php echo \esc_attr( $label . '|' . $value ); ?>"' class="option"> <?php echo esc_html( $label ); ?>
-									</label><br>
+								</label><br>
 
-									<?php
-								}
-							}
-
-							?>
+							<?php endforeach; ?>
+=
 						</fieldset>
 					</td>
 				</tr>
