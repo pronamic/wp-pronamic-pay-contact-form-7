@@ -10,6 +10,8 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 
+use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
 use Pronamic\WordPress\Pay\Util;
 use WPCF7_FormTag;
@@ -84,17 +86,23 @@ class IssuerTag {
 		}
 
 		// Payment method options.
-		$issuer_options = $gateway->get_transient_issuers();
+		$issuer_field = $gateway->first_payment_method_field( PaymentMethods::IDEAL, IDealIssuerSelectField::class );
 
-		if ( null === $issuer_options ) {
+		if ( null === $issuer_field ) {
 			return '';
+		}
+
+		$html_options = '';
+
+		foreach ( $issuer_field->get_options() as $option ) {
+			$html_options .= $option->render();
 		}
 
 		$html = \sprintf(
 			'<span class="wpcf7-form-control-wrap %1$s"><select %2$s>%3$s</select>%4$s</span>',
 			\sanitize_html_class( $tag->name ),
 			\wpcf7_format_atts( $attributes ),
-			Util::select_options_grouped( $issuer_options, $attributes['value'] ),
+			$html_options,
 			$error
 		);
 
