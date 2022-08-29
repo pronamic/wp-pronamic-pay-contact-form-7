@@ -30,7 +30,7 @@ $payment_methods = [];
 $gateway = Pronamic::get_default_gateway();
 
 if ( null !== $gateway ) {
-	$payment_methods = $gateway->gat_payment_methods(
+	$payment_methods = $gateway->get_payment_methods(
 		[
 			'status' => [ '', 'active' ],
 		]
