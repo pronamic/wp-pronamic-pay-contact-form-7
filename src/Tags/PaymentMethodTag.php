@@ -197,7 +197,7 @@ class PaymentMethodTag {
 	public function add_tag_generator() {
 		$tag_generator = \WPCF7_TagGenerator::get_instance();
 
-		$tag_generator->add( self::TAG, __( 'Payment method', 'pronamic_ideal' ), array( $this, 'tag_generator' ) );
+		$tag_generator->add( self::TAG, \__( 'payment method', 'pronamic_ideal' ), array( $this, 'tag_generator' ) );
 	}
 
 	/**

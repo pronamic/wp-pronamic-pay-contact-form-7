@@ -145,7 +145,7 @@ class IssuerTag {
 	public function add_tag_generator() {
 		$tag_generator = \WPCF7_TagGenerator::get_instance();
 
-		$tag_generator->add( self::TAG, __( 'Issuer', 'pronamic_ideal' ), array( $this, 'tag_generator' ) );
+		$tag_generator->add( self::TAG, __( 'issuer', 'pronamic_ideal' ), array( $this, 'tag_generator' ) );
 	}
 
 	/**
