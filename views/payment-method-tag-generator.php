@@ -99,7 +99,7 @@ if ( null !== $gateway ) {
 									<?php
 
 									$name = \sprintf(
-										'%s|%s',
+										'"%s|%s"',
 										$payment_method->get_name(),
 										$payment_method->get_id()
 									);
