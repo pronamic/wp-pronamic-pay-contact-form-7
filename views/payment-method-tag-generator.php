@@ -115,7 +115,7 @@ if ( null !== $gateway ) {
 								</label><br>
 
 							<?php endforeach; ?>
-=
+
 						</fieldset>
 					</td>
 				</tr>
