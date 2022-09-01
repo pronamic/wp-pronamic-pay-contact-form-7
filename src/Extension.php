@@ -55,10 +55,10 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function __construct() {
 		parent::__construct(
-			array(
+			[
 				'name'    => __( 'Contact Form 7', 'pronamic_ideal' ),
 				'version' => '1.0.0',
-			)
+			]
 		);
 
 		// Dependencies.
@@ -73,19 +73,19 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function setup() {
-		\add_filter( 'pronamic_payment_source_description_' . self::SLUG, array( $this, 'source_description' ), 10, 2 );
-		\add_filter( 'pronamic_subscription_source_description_' . self::SLUG, array( $this, 'subscription_source_description' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_description_' . self::SLUG, [ $this, 'source_description' ], 10, 2 );
+		\add_filter( 'pronamic_subscription_source_description_' . self::SLUG, [ $this, 'subscription_source_description' ], 10, 2 );
 
 		// Check if dependencies are met and integration is active.
 		if ( ! $this->is_active() ) {
 			return;
 		}
 
-		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( $this, 'source_text' ), 10, 2 );
-		\add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( $this, 'subscription_source_text' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, [ $this, 'source_text' ], 10, 2 );
+		\add_filter( 'pronamic_subscription_source_text_' . self::SLUG, [ $this, 'subscription_source_text' ], 10, 2 );
 
 		// Actions.
-		\add_action( 'wpcf7_init', array( $this, 'init' ) );
+		\add_action( 'wpcf7_init', [ $this, 'init' ] );
 	}
 
 	/**
@@ -95,15 +95,15 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function init() {
 		// Actions.
-		\add_action( 'wpcf7_before_send_mail', array( $this, 'before_send_mail' ), 10, 3 );
-		\add_action( 'wpcf7_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		\add_action( 'wpcf7_mail_sent', array( $this, 'wpcf7_disabled_scripts_redirect' ) );
-		\add_action( 'wpcf7_mail_failed', array( $this, 'wpcf7_disabled_scripts_redirect' ) );
+		\add_action( 'wpcf7_before_send_mail', [ $this, 'before_send_mail' ], 10, 3 );
+		\add_action( 'wpcf7_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		\add_action( 'wpcf7_mail_sent', [ $this, 'wpcf7_disabled_scripts_redirect' ] );
+		\add_action( 'wpcf7_mail_failed', [ $this, 'wpcf7_disabled_scripts_redirect' ] );
 
 		// Filters.
 		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
-		\add_filter( 'wpcf7_collect_mail_tags', array( $this, 'collect_mail_tags' ) );
-		\add_filter( 'wpcf7_mail_tag_replaced', array( $this, 'replace_mail_tags' ), 10, 4 );
+		\add_filter( 'wpcf7_collect_mail_tags', [ $this, 'collect_mail_tags' ] );
+		\add_filter( 'wpcf7_mail_tag_replaced', [ $this, 'replace_mail_tags' ], 10, 4 );
 
 		$this->register_tags();
 	}
@@ -157,25 +157,25 @@ class Extension extends AbstractPluginIntegration {
 
 			$this->payment = $payment;
 
-			$this->feedback_args = array(
+			$this->feedback_args = [
 				'status'                    => 'pronamic_pay_redirect',
 				'message'                   => __( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
 				'pronamic_pay_redirect_url' => $payment->get_pay_redirect_url(),
-			);
+			];
 		} catch ( \Exception $e ) {
-			$this->feedback_args = array(
+			$this->feedback_args = [
 				'status'  => 'pronamic_pay_error',
 				'message' => sprintf(
 					'%s' . str_repeat( \PHP_EOL, 2 ) . '%s',
 					Plugin::get_default_error_message(),
 					$e->getMessage()
 				),
-			);
+			];
 
 			$abort = true;
 		}
 
-		\add_filter( 'wpcf7_feedback_response', array( $this, 'feedback_response' ), 10, 2 );
+		\add_filter( 'wpcf7_feedback_response', [ $this, 'feedback_response' ], 10, 2 );
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Extension extends AbstractPluginIntegration {
 		\wp_register_script(
 			'pronamic-pay-contact-form-7',
 			plugins_url( 'js/dist/payment-form-processor.js', dirname( __FILE__ ) ),
-			array(),
+			[],
 			$this->get_version(),
 			true
 		);
@@ -243,15 +243,15 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function collect_mail_tags( $mail_tags = null ) {
 		if ( ! \is_array( $mail_tags ) ) {
-			$mail_tags = array();
+			$mail_tags = [];
 		}
 
 		$mail_tags = \array_merge(
 			$mail_tags,
-			array(
+			[
 				'pronamic_payment_id',
 				'pronamic_transaction_id',
-			)
+			]
 		);
 
 		return $mail_tags;
@@ -276,10 +276,10 @@ class Extension extends AbstractPluginIntegration {
 		if ( $this->payment instanceof Payment ) {
 			$payment = $this->payment;
 
-			$replacements = array(
+			$replacements = [
 				'pronamic_payment_id'     => $payment->get_id(),
 				'pronamic_transaction_id' => $payment->get_transaction_id(),
-			);
+			];
 		}
 
 		// Replace.

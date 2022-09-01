@@ -34,15 +34,15 @@ class IssuerTag {
 	 * Issuer tag constructor.
 	 */
 	public function __construct() {
-		\wpcf7_add_form_tag( self::TAG, array( $this, 'handler' ), true );
-		\wpcf7_add_form_tag( self::TAG . '*', array( $this, 'handler' ), true );
+		\wpcf7_add_form_tag( self::TAG, [ $this, 'handler' ], true );
+		\wpcf7_add_form_tag( self::TAG . '*', [ $this, 'handler' ], true );
 
 		// Filters.
-		\add_filter( 'wpcf7_validate_' . self::TAG, array( $this, 'validate' ), 10, 2 );
-		\add_filter( 'wpcf7_validate_' . self::TAG . '*', array( $this, 'validate' ), 10, 2 );
+		\add_filter( 'wpcf7_validate_' . self::TAG, [ $this, 'validate' ], 10, 2 );
+		\add_filter( 'wpcf7_validate_' . self::TAG . '*', [ $this, 'validate' ], 10, 2 );
 
 		// Actions.
-		\add_action( 'wpcf7_admin_init', array( $this, 'add_tag_generator' ), 60 );
+		\add_action( 'wpcf7_admin_init', [ $this, 'add_tag_generator' ], 60 );
 	}
 
 	/**
@@ -73,13 +73,13 @@ class IssuerTag {
 
 		$value = (string) reset( $tag->values );
 
-		$attributes = array(
+		$attributes = [
 			'class'    => $tag->get_class_option( $class ),
 			'id'       => $tag->get_id_option(),
 			'name'     => $tag->name,
 			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
 			'value'    => \wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
-		);
+		];
 
 		if ( $tag->has_option( 'readonly' ) ) {
 			$attributes['readonly'] = 'readonly';
@@ -153,7 +153,7 @@ class IssuerTag {
 	public function add_tag_generator() {
 		$tag_generator = \WPCF7_TagGenerator::get_instance();
 
-		$tag_generator->add( self::TAG, __( 'issuer', 'pronamic_ideal' ), array( $this, 'tag_generator' ) );
+		$tag_generator->add( self::TAG, __( 'issuer', 'pronamic_ideal' ), [ $this, 'tag_generator' ] );
 	}
 
 	/**

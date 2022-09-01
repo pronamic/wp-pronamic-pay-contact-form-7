@@ -12,10 +12,10 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
 
 if ( ! isset( $args ) ) {
-	$args = array();
+	$args = [];
 }
 
-$args = wp_parse_args( $args, array() );
+$args = wp_parse_args( $args, [] );
 
 /* translators: 1: Pronamic Pay plugin name, 2: documentation URL anchor */
 $description = __( 'Generate a tag for a payment method field. %1$s requires a field with the `pronamic_pay_amount` option, but payment method and issuer fields are optional in most cases. For step-by-step instructions on receiving payments with Contact Form 7, please see %2$s.', 'pronamic_ideal' );
