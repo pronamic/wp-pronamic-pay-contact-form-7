@@ -32,16 +32,16 @@ class PaymentMethodTag {
 	 * Payment method tag constructor.
 	 */
 	public function __construct() {
-		\wpcf7_add_form_tag( self::TAG, array( $this, 'handler' ), true );
-		\wpcf7_add_form_tag( self::TAG . '*', array( $this, 'handler' ), true );
+		\wpcf7_add_form_tag( self::TAG, [ $this, 'handler' ], true );
+		\wpcf7_add_form_tag( self::TAG . '*', [ $this, 'handler' ], true );
 
 		// Filters.
-		\add_filter( 'wpcf7_validate_' . self::TAG, array( $this, 'validate' ), 10, 2 );
-		\add_filter( 'wpcf7_validate_' . self::TAG . '*', array( $this, 'validate' ), 10, 2 );
-		\add_filter( 'wpcf7_messages', array( $this, 'messages' ) );
+		\add_filter( 'wpcf7_validate_' . self::TAG, [ $this, 'validate' ], 10, 2 );
+		\add_filter( 'wpcf7_validate_' . self::TAG . '*', [ $this, 'validate' ], 10, 2 );
+		\add_filter( 'wpcf7_messages', [ $this, 'messages' ] );
 
 		// Actions.
-		\add_action( 'wpcf7_admin_init', array( $this, 'add_tag_generator' ), 60 );
+		\add_action( 'wpcf7_admin_init', [ $this, 'add_tag_generator' ], 60 );
 	}
 
 	/**
@@ -72,29 +72,27 @@ class PaymentMethodTag {
 
 		$value = (string) reset( $tag->values );
 
-		$attributes = array(
+		$attributes = [
 			'class'    => $tag->get_class_option( $class ),
 			'id'       => $tag->get_id_option(),
 			'name'     => $tag->name,
 			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
 			'value'    => \wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
-		);
+		];
 
 		if ( $tag->has_option( 'readonly' ) ) {
 			$attributes['readonly'] = 'readonly';
 		}
 
 		// Payment method options.
-		$method_options = $gateway->get_payment_method_field_options();
-
-		$options = array();
+		$options = [];
 
 		/*
 		 * Search payment method values in tag pipes.
 		 *
 		 * @link https://contactform7.com/selectable-recipient-with-pipes/
 		 */
-		$pipes = array();
+		$pipes = [];
 
 		if ( $tag->pipes instanceof \WPCF7_Pipes ) {
 			$combined = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
@@ -104,10 +102,15 @@ class PaymentMethodTag {
 			}
 		}
 
-		foreach ( $method_options as $value => $label ) {
-			if ( PaymentMethods::is_direct_debit_method( $value ) ) {
-				continue;
-			}
+		$payment_methods = $gateway->get_payment_methods(
+			[
+				'status' => [ '', 'active' ],
+			]
+		);
+
+		foreach ( $payment_methods as $payment_method ) {
+			$value = $payment_method->get_id();
+			$label = $payment_method->get_name();
 
 			if ( ! empty( $tag->values ) && ! \array_key_exists( $value, $pipes ) ) {
 				continue;
@@ -165,15 +168,6 @@ class PaymentMethodTag {
 			return $result;
 		}
 
-		// Check if gateway requires payment method.
-		$gateway = Pronamic::get_default_gateway();
-
-		if ( null !== $gateway && $gateway->payment_method_is_required() && empty( $value ) ) {
-			$result->invalidate( $tag, \wpcf7_get_message( 'invalid_pronamic_pay_method_required' ) );
-
-			return $result;
-		}
-
 		return $result;
 	}
 
@@ -186,12 +180,12 @@ class PaymentMethodTag {
 	public function messages( $messages ) {
 		return \array_merge(
 			$messages,
-			array(
-				'invalid_pronamic_pay_method_required' => array(
+			[
+				'invalid_pronamic_pay_method_required' => [
 					'description' => __( 'Payment method required.', 'pronamic_ideal' ),
 					'default'     => __( 'The payment method is invalid.', 'pronamic_ideal' ),
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -203,7 +197,7 @@ class PaymentMethodTag {
 	public function add_tag_generator() {
 		$tag_generator = \WPCF7_TagGenerator::get_instance();
 
-		$tag_generator->add( self::TAG, __( 'Payment method', 'pronamic_ideal' ), array( $this, 'tag_generator' ) );
+		$tag_generator->add( self::TAG, \__( 'payment method', 'pronamic_ideal' ), [ $this, 'tag_generator' ] );
 	}
 
 	/**

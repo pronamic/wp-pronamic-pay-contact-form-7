@@ -32,13 +32,13 @@ class AmountTag {
 	 * Amount constructor.
 	 */
 	public function __construct() {
-		\wpcf7_add_form_tag( self::TAG, array( $this, 'handler' ), true );
-		\wpcf7_add_form_tag( self::TAG . '*', array( $this, 'handler' ), true );
+		\wpcf7_add_form_tag( self::TAG, [ $this, 'handler' ], true );
+		\wpcf7_add_form_tag( self::TAG . '*', [ $this, 'handler' ], true );
 
 		// Filters.
-		\add_filter( 'wpcf7_validate_' . self::TAG, array( $this, 'validate' ), 10, 2 );
-		\add_filter( 'wpcf7_validate_' . self::TAG . '*', array( $this, 'validate' ), 10, 2 );
-		\add_filter( 'wpcf7_messages', array( $this, 'messages' ) );
+		\add_filter( 'wpcf7_validate_' . self::TAG, [ $this, 'validate' ], 10, 2 );
+		\add_filter( 'wpcf7_validate_' . self::TAG . '*', [ $this, 'validate' ], 10, 2 );
+		\add_filter( 'wpcf7_messages', [ $this, 'messages' ] );
 	}
 
 	/**
@@ -62,7 +62,7 @@ class AmountTag {
 
 		$value = (string) reset( $tag->values );
 
-		$attributes = array(
+		$attributes = [
 			'class'    => $tag->get_class_option( $class ),
 			'id'       => $tag->get_id_option(),
 			'name'     => $tag->name,
@@ -70,7 +70,7 @@ class AmountTag {
 			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
 			'type'     => 'text',
 			'value'    => \wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
-		);
+		];
 
 		if ( $tag->has_option( 'readonly' ) ) {
 			$attributes['readonly'] = 'readonly';
@@ -140,12 +140,12 @@ class AmountTag {
 	public function messages( $messages ) {
 		return \array_merge(
 			$messages,
-			array(
-				'invalid_pronamic_pay_amount' => array(
+			[
+				'invalid_pronamic_pay_amount' => [
 					'description' => __( 'Input amount is invalid.', 'pronamic_ideal' ),
 					'default'     => __( 'The input amount is invalid.', 'pronamic_ideal' ),
-				),
-			)
+				],
+			]
 		);
 	}
 }

@@ -62,7 +62,7 @@ class Pronamic {
 		}
 
 		if ( ! \is_array( $hidden_fields ) ) {
-			$hidden_fields = array();
+			$hidden_fields = [];
 		}
 
 		// @link https://contactform7.com/tag-syntax/
@@ -70,7 +70,7 @@ class Pronamic {
 
 		foreach ( $tags as $tag ) {
 			// Check if tag base type or name is requested type or tag has requested type as option.
-			if ( ! \in_array( $tag->basetype, array( $type, $prefixed_type ), true ) && ! $tag->has_option( $prefixed_type ) && $prefixed_type !== $tag->name ) {
+			if ( ! \in_array( $tag->basetype, [ $type, $prefixed_type ], true ) && ! $tag->has_option( $prefixed_type ) && $prefixed_type !== $tag->name ) {
 				continue;
 			}
 
@@ -101,14 +101,14 @@ class Pronamic {
 				 */
 				if ( $tag->pipes instanceof WPCF7_Pipes ) {
 					// Make multidimensional array with pipe options by value.
-					$options = array();
+					$options = [];
 
 					$labels = $tag->pipes->collect_befores();
 
 					foreach ( $tag->pipes->collect_afters() as $key => $after ) {
 						// Make sure array for value exists.
 						if ( ! \array_key_exists( $after, $options ) ) {
-							$options[ $after ] = array();
+							$options[ $after ] = [];
 						}
 
 						// Add option to value array.
@@ -223,10 +223,6 @@ class Pronamic {
 		// Payment method.
 		$issuer = self::get_submission_value( 'issuer' );
 
-		if ( empty( $payment_method ) && ( null !== $issuer || $gateway->payment_method_is_required() ) ) {
-			$payment_method = PaymentMethods::IDEAL;
-		}
-
 		$payment->title = $title;
 
 		$payment->set_description( $description );
@@ -258,7 +254,7 @@ class Pronamic {
 		$billing_address  = clone $address;
 		$shipping_address = clone $address;
 
-		$address_fields = array(
+		$address_fields = [
 			'line_1',
 			'line_2',
 			'city',
@@ -267,7 +263,7 @@ class Pronamic {
 			'country_code',
 			'company_name',
 			'coc_number',
-		);
+		];
 
 		foreach ( $address_fields as $field ) {
 			$billing_value  = self::get_submission_value( 'billing_address_' . $field );
@@ -275,7 +271,7 @@ class Pronamic {
 			$address_value  = self::get_submission_value( 'address_' . $field );
 
 			if ( ! empty( $billing_value ) || ! empty( $address_value ) ) {
-				$callback = array( $billing_address, 'set_' . $field );
+				$callback = [ $billing_address, 'set_' . $field ];
 
 				if ( \is_callable( $callback ) ) {
 					call_user_func( $callback, empty( $billing_value ) ? $address_value : $billing_value );
@@ -283,7 +279,7 @@ class Pronamic {
 			}
 
 			if ( ! empty( $shipping_value ) || ! empty( $address_value ) ) {
-				$callback = array( $shipping_address, 'set_' . $field );
+				$callback = [ $shipping_address, 'set_' . $field ];
 
 				if ( \is_callable( $callback ) ) {
 					call_user_func( $callback, empty( $shipping_value ) ? $address_value : $shipping_value );

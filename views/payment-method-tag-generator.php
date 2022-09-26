@@ -12,15 +12,31 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
 
 if ( ! isset( $args ) ) {
-	$args = array();
+	$args = [];
 }
 
-$args = wp_parse_args( $args, array() );
+$args = wp_parse_args( $args, [] );
 
 /* translators: 1: Pronamic Pay plugin name, 2: documentation URL anchor */
 $description = __( 'Generate a tag for a payment method field. %1$s requires a field with the `pronamic_pay_amount` option, but payment method and issuer fields are optional in most cases. For step-by-step instructions on receiving payments with Contact Form 7, please see %2$s.', 'pronamic_ideal' );
 
 $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-contact-form-7-to-pronamic-pay/', 'pronamic_ideal' ), __( 'How to connect Contact Form 7 to Pronamic Pay', 'pronamic_ideal' ) );
+
+/**
+ * Payment method options.
+ */
+$payment_methods = [];
+
+$gateway = Pronamic::get_default_gateway();
+
+if ( null !== $gateway ) {
+	$payment_methods = $gateway->get_payment_methods(
+		[
+			'status' => [ '', 'active' ],
+		]
+	);
+}
+
 
 ?>
 <div class="control-box">
@@ -77,31 +93,29 @@ $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-con
 								<?php echo esc_html( __( 'Payment Methods', 'pronamic_ideal' ) ); ?>
 							</legend>
 
-							<?php
+							<?php foreach ( $payment_methods as $payment_method ) : ?>
 
-							// Get gateway.
-							$gateway = Pronamic::get_default_gateway();
+								<label>
+									<?php
 
-							if ( null !== $gateway ) {
-								// Payment method options.
-								$method_options = $gateway->get_payment_method_field_options();
+									$name = \sprintf(
+										'"%s|%s"',
+										$payment_method->get_name(),
+										$payment_method->get_id()
+									);
 
-								foreach ( $method_options as $value => $label ) {
-									if ( PaymentMethods::is_direct_debit_method( $value ) ) {
-										continue;
-									}
+									printf(
+										'<input type="checkbox" name="%s" class="option"> %s',
+										esc_attr( $name ),
+										esc_html( $payment_method->get_name() )
+									);
 
 									?>
 
-									<label>
-										<input type="checkbox" name='"<?php echo \esc_attr( $label . '|' . $value ); ?>"' class="option"> <?php echo esc_html( $label ); ?>
-									</label><br>
+								</label><br>
 
-									<?php
-								}
-							}
+							<?php endforeach; ?>
 
-							?>
 						</fieldset>
 					</td>
 				</tr>
