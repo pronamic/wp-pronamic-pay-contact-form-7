@@ -112,7 +112,10 @@ class AmountTag {
 	 * @return WPCF7_Validation
 	 */
 	public function validate( $result, $tag ) {
-		$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$value = array_key_exists( $tag->name, $_POST ) ? \sanitize_text_field( \wp_unslash( $_POST[ $tag->name ] ) ) : '';
+
+		$value = trim( $value );
 
 		// Check required.
 		if ( $tag->is_required() && empty( $value ) ) {

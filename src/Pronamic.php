@@ -50,6 +50,7 @@ class Pronamic {
 	 * @return mixed
 	 */
 	public static function get_submission_value( $type ) {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		$result = null;
 
 		$prefixed_type = 'pronamic_pay_' . $type;
@@ -79,7 +80,9 @@ class Pronamic {
 				continue;
 			}
 
-			$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING, [ 'flags' => \FILTER_FLAG_NO_ENCODE_QUOTES ] ) );
+			$value = array_key_exists( $tag->name, $_POST ) ? \sanitize_text_field( \wp_unslash( $_POST[ $tag->name ] ) ) : '';
+
+			$value = trim( $value );
 
 			if ( 'checkbox' === $tag->basetype ) {
 				$value = \filter_input( \INPUT_POST, $tag->name, \FILTER_DEFAULT, \FILTER_REQUIRE_ARRAY );
@@ -132,7 +135,9 @@ class Pronamic {
 						if ( $tag->has_option( 'free_text' ) && end( $tag->values ) === $value ) {
 							$free_text_name = sprintf( '%s_free_text', $tag->name );
 
-							$value = trim( \filter_input( \INPUT_POST, $free_text_name, \FILTER_SANITIZE_STRING ) );
+							if ( \array_key_exists( $free_text_name, $_POST ) ) {
+								$value = trim( \sanitize_text_field( \wp_unslash( $_POST[ $free_text_name ] ) ) );
+							}
 						}
 
 						$value = Tags\AmountTag::parse_value( $value );
@@ -153,6 +158,8 @@ class Pronamic {
 				return $result;
 			}
 		}
+
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		return $result;
 	}

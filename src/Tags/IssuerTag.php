@@ -13,7 +13,6 @@ namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
 use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
-use Pronamic\WordPress\Pay\Util;
 use WPCF7_FormTag;
 use WPCF7_Validation;
 
@@ -116,7 +115,8 @@ class IssuerTag {
 	 * @return string|null
 	 */
 	public static function get_value( $name ) {
-		$value = \trim( \filter_input( \INPUT_POST, $name, \FILTER_SANITIZE_STRING ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$value = array_key_exists( $name, $_POST ) ? \sanitize_text_field( \wp_unslash( $_POST[ $name ] ) ) : '';
 
 		if ( empty( $value ) ) {
 			return null;
@@ -133,7 +133,10 @@ class IssuerTag {
 	 * @return WPCF7_Validation
 	 */
 	public function validate( $result, $tag ) {
-		$value = trim( \filter_input( \INPUT_POST, $tag->name, \FILTER_SANITIZE_STRING ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$value = array_key_exists( $tag->name, $_POST ) ? \sanitize_text_field( \wp_unslash( $_POST[ $tag->name ] ) ) : '';
+
+		$value = trim( $value );
 
 		// Check required.
 		if ( $tag->is_required() && empty( $value ) ) {
