@@ -208,6 +208,6 @@ class PaymentMethodTag {
 	 * @return void
 	 */
 	public function tag_generator( $form, $args ) {
-		require \dirname( __FILE__ ) . '/../../views/payment-method-tag-generator.php';
+		require __DIR__ . '/../../views/payment-method-tag-generator.php';
 	}
 }

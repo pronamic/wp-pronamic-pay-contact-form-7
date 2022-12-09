@@ -164,6 +164,6 @@ class IssuerTag {
 	 * @return void
 	 */
 	public function tag_generator( $form, $args ) {
-		require \dirname( __FILE__ ) . '/../../views/issuer-tag-generator.php';
+		require __DIR__ . '/../../views/issuer-tag-generator.php';
 	}
 }

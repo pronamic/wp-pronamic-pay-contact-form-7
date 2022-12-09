@@ -226,7 +226,7 @@ class Extension extends AbstractPluginIntegration {
 	public function enqueue_scripts() {
 		\wp_register_script(
 			'pronamic-pay-contact-form-7',
-			plugins_url( 'js/dist/payment-form-processor.js', dirname( __FILE__ ) ),
+			plugins_url( 'js/dist/payment-form-processor.js', __DIR__ ),
 			[],
 			$this->get_version(),
 			true
