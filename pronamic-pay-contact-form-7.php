@@ -16,7 +16,7 @@
  *
  * License: GPL-3.0-or-later
  *
- * Requires Plugins: pronamic-ideal
+ * Requires Plugins: pronamic-ideal, contact-form-7
  * Depends: wp-pay/core
  *
  * GitHub URI: https://github.com/wp-pay-extensions/contact-form-7
