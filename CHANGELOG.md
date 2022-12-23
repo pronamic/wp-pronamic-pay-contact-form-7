@@ -7,6 +7,21 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.2.0] - 2022-12-23
+
+### Commits
+
+- Added support for https://github.com/WordPress/wp-plugin-dependencies. ([c251392](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/c2513924268437eed1f8a519e758dd52e4e9fea0))
+
+### Composer
+
+- Changed `php` from `>=5.6.20` to `>=8.0`.
+- Changed `wp-pay/core` from `^4.4` to `v4.6.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v3.1.2
+Full set of changes: [`3.1.2...3.2.0`][3.2.0]
+
+[3.2.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.1.2...v3.2.0
+
 ## [3.1.2] - 2022-09-27
 - Updated version number in `readme.txt`.
 
