@@ -7,6 +7,14 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.2.1] - 2023-01-31
+### Composer
+
+- Changed `php` from `>=8.0` to `>=7.4`.
+Full set of changes: [`3.2.0...3.2.1`][3.2.1]
+
+[3.2.1]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.2.0...v3.2.1
+
 ## [3.2.0] - 2022-12-23
 
 ### Commits
