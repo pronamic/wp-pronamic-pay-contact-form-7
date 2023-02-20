@@ -121,6 +121,18 @@ class Pronamic {
 					// Search for value in options.
 					foreach ( $options as $after => $labels ) {
 						if ( false !== \array_search( $value, $labels, true ) ) {
+							// Handle free text input.
+							if ( $tag->has_option( 'free_text' ) && end( $tag->values ) === $value ) {
+								$free_text_name = sprintf( '%s_free_text', $tag->name );
+
+								if ( \array_key_exists( $free_text_name, $_POST ) ) {
+									$value = trim( \sanitize_text_field( \wp_unslash( $_POST[ $free_text_name ] ) ) );
+								}
+
+								continue;
+							}
+
+							// Set 'after value' as value.
 							$value = $after;
 
 							break;
@@ -131,15 +143,6 @@ class Pronamic {
 				// Parse value.
 				switch ( $type ) {
 					case 'amount':
-						// Handle free text input.
-						if ( $tag->has_option( 'free_text' ) && end( $tag->values ) === $value ) {
-							$free_text_name = sprintf( '%s_free_text', $tag->name );
-
-							if ( \array_key_exists( $free_text_name, $_POST ) ) {
-								$value = trim( \sanitize_text_field( \wp_unslash( $_POST[ $free_text_name ] ) ) );
-							}
-						}
-
 						$value = Tags\AmountTag::parse_value( $value );
 
 						// Set parsed value as result or add to existing money result.
