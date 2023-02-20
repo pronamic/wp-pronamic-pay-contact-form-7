@@ -129,7 +129,7 @@ class Pronamic {
 									$value = trim( \sanitize_text_field( \wp_unslash( $_POST[ $free_text_name ] ) ) );
 								}
 
-								continue;
+								break;
 							}
 
 							// Set 'after value' as value.
