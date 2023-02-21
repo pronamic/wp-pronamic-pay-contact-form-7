@@ -95,7 +95,7 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function init() {
 		// Actions.
-		\add_action( 'wpcf7_before_send_mail', [ $this, 'before_send_mail' ], 10, 3 );
+		\add_action( 'wpcf7_submit', [ $this, 'submit' ], 10, 2 );
 		\add_action( 'wpcf7_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		\add_action( 'wpcf7_mail_sent', [ $this, 'wpcf7_disabled_scripts_redirect' ] );
 		\add_action( 'wpcf7_mail_failed', [ $this, 'wpcf7_disabled_scripts_redirect' ] );
@@ -125,14 +125,13 @@ class Extension extends AbstractPluginIntegration {
 	}
 
 	/**
-	 * Handle submit, before sending mail.
+	 * Handle submit.
 	 *
-	 * @param WPCF7_ContactForm $form       Contact Form 7 form.
-	 * @param bool              $abort      Whether or not to abort submission.
-	 * @param WPCF7_Submission  $submission Form submission.
+	 * @param WPCF7_ContactForm    $form   Contact Form 7 form.
+	 * @param array<string, mixed> $result Form result.
 	 * @return void
 	 */
-	public function before_send_mail( WPCF7_ContactForm $form, &$abort, WPCF7_Submission $submission ) {
+	public function submit( WPCF7_ContactForm $form, array $result ) {
 		// Get gateway.
 		$config_id = \get_option( 'pronamic_pay_config_id' );
 
@@ -144,6 +143,8 @@ class Extension extends AbstractPluginIntegration {
 
 		try {
 			// Start payment.
+			$submission = WPCF7_Submission::get_instance();
+
 			$payment = Pronamic::get_submission_payment( $submission );
 
 			// Return on invalid payment.
@@ -171,8 +172,6 @@ class Extension extends AbstractPluginIntegration {
 					$e->getMessage()
 				),
 			];
-
-			$abort = true;
 		}
 
 		\add_filter( 'wpcf7_feedback_response', [ $this, 'feedback_response' ], 10, 2 );
