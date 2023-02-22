@@ -158,10 +158,15 @@ class Extension extends AbstractPluginIntegration {
 			$this->payment = $payment;
 
 			$this->feedback_args = [
-				'status'                    => 'pronamic_pay_redirect',
-				'message'                   => __( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
-				'pronamic_pay_redirect_url' => $payment->get_pay_redirect_url(),
+				'status'  => 'pronamic_pay_redirect',
+				'message' => __( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
 			];
+
+			$submission->add_result_props(
+				[
+					'pronamic_pay_redirect_url' => $payment->get_pay_redirect_url(),
+				]
+			);
 		} catch ( \Exception $e ) {
 			$this->feedback_args = [
 				'status'  => 'pronamic_pay_error',
