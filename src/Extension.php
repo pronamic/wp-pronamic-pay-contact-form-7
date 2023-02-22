@@ -37,13 +37,6 @@ class Extension extends AbstractPluginIntegration {
 	const SLUG = 'contact-form-7';
 
 	/**
-	 * Feedback response args.
-	 *
-	 * @var array<string, string>
-	 */
-	private $feedback_args;
-
-	/**
 	 * Payment.
 	 *
 	 * @var Payment|null
@@ -103,6 +96,7 @@ class Extension extends AbstractPluginIntegration {
 		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
 		\add_filter( 'wpcf7_collect_mail_tags', [ $this, 'collect_mail_tags' ] );
 		\add_filter( 'wpcf7_mail_tag_replaced', [ $this, 'replace_mail_tags' ], 10, 4 );
+		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 
 		$this->register_tags();
 	}
@@ -156,30 +150,44 @@ class Extension extends AbstractPluginIntegration {
 
 			$this->payment = $payment;
 
-			$this->feedback_args = [
-				'status'  => 'pronamic_pay_redirect',
-				'message' => __( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
-			];
-
 			$submission->add_result_props(
 				[
 					'pronamic_pay_redirect_url' => $payment->get_pay_redirect_url(),
 				]
 			);
 		} catch ( \Exception $e ) {
-			$this->feedback_args = [
-				'status'  => 'pronamic_pay_error',
-				'message' => sprintf(
-					'%s' . str_repeat( \PHP_EOL, 2 ) . '%s',
+			$submission->set_status( 'pronamic_pay_error' );
+
+			$submission->set_response(
+				\sprintf(
+					'%s' . \str_repeat( \PHP_EOL, 2 ) . '%s',
 					Plugin::get_default_error_message(),
 					$e->getMessage()
-				),
-			];
+				)
+			);
 
 			$abort = true;
 		}
+	}
 
-		\add_filter( 'wpcf7_feedback_response', [ $this, 'feedback_response' ], 10, 2 );
+	/**
+	 * Submission result.
+	 *
+	 * @param array<string, mixed> $result     Submission result.
+	 * @param WPCF7_Submission     $submission Submission.
+	 */
+	public function submission_result( array $result, WPCF7_Submission $submission ) {
+		if ( null !== $this->payment ) {
+			$result = \array_merge(
+				$result,
+				[
+					'status'  => 'pronamic_pay_redirect',
+					'message' => \__( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
+				]
+			);
+		}
+
+		return $result;
 	}
 
 	/**
@@ -201,19 +209,6 @@ class Extension extends AbstractPluginIntegration {
 		\wp_redirect( $this->payment->get_pay_redirect_url() );
 
 		exit;
-	}
-
-	/**
-	 * Feedback response.
-	 *
-	 * @param array<string, mixed> $response REST API feedback response.
-	 * @param array<string, mixed> $result   Form submit result.
-	 * @return array<string, string>
-	 */
-	public function feedback_response( $response, $result ) {
-		$response = \wp_parse_args( $this->feedback_args, $response );
-
-		return $response;
 	}
 
 	/**
