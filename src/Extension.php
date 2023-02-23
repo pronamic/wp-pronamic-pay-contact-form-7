@@ -37,13 +37,6 @@ class Extension extends AbstractPluginIntegration {
 	const SLUG = 'contact-form-7';
 
 	/**
-	 * Payment.
-	 *
-	 * @var Payment|null
-	 */
-	private $payment;
-
-	/**
 	 * Construct Contact Form 7 plugin integration.
 	 */
 	public function __construct() {
@@ -135,8 +128,6 @@ class Extension extends AbstractPluginIntegration {
 
 			$payment = Plugin::start_payment( $payment );
 
-			$this->payment = $payment;
-
 			$submission->add_result_props(
 				[
 					'pronamic_pay_payment_id'     => $payment->get_id(),
@@ -221,23 +212,17 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Collect mail tags.
 	 *
-	 * @param string[]|null $mail_tags Mail tags.
+	 * @param string[] $mail_tags Mail tags.
 	 * @return string[]
 	 */
-	public function collect_mail_tags( $mail_tags = null ) {
-		if ( ! \is_array( $mail_tags ) ) {
-			$mail_tags = [];
-		}
-
-		$mail_tags = \array_merge(
+	public function collect_mail_tags( $mail_tags ) {
+		return \array_merge(
 			$mail_tags,
 			[
 				'pronamic_payment_id',
 				'pronamic_transaction_id',
 			]
 		);
-
-		return $mail_tags;
 	}
 
 	/**
@@ -250,20 +235,15 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function replace_mail_tags( $replaced, $submitted, $html, $mail_tag ) {
-		// Default replacements.
-		$mail_tags = $this->collect_mail_tags();
+		// Replacements.
+		$submission = WPCF7_Submission::get_instance();
 
-		$replacements = \array_fill_keys( \array_values( $mail_tags ), '' );
+		$result = $submission->get_result();
 
-		// Payment replacements.
-		if ( $this->payment instanceof Payment ) {
-			$payment = $this->payment;
-
-			$replacements = [
-				'pronamic_payment_id'     => $payment->get_id(),
-				'pronamic_transaction_id' => $payment->get_transaction_id(),
-			];
-		}
+		$replacements = [
+			'pronamic_payment_id'     => \array_key_exists( 'pronamic_pay_payment_id', $result ) ? $result['pronamic_pay_payment_id'] : '',
+			'pronamic_transaction_id' => \array_key_exists( 'pronamic_pay_transaction_id', $result ) ? $result['pronamic_pay_transaction_id'] : '',
+		];
 
 		// Replace.
 		$tag_name = $mail_tag->tag_name();
