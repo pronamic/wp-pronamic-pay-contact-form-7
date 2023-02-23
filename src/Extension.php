@@ -90,6 +90,7 @@ class Extension extends AbstractPluginIntegration {
 		// Actions.
 		\add_action( 'wpcf7_before_send_mail', [ $this, 'before_send_mail' ], 10, 3 );
 		\add_action( 'wpcf7_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 		\add_action( 'wpcf7_submit', [ $this, 'submit' ], 10, 2 );
 
 		// Filters.
@@ -107,7 +108,7 @@ class Extension extends AbstractPluginIntegration {
 	 * Handle submit, before sending mail.
 	 *
 	 * @param WPCF7_ContactForm $form       Contact Form 7 form.
-	 * @param bool              $abort      Whether or not to abort submission.
+	 * @param bool              $abort      Whether to abort submission.
 	 * @param WPCF7_Submission  $submission Form submission.
 	 * @return void
 	 */
@@ -138,11 +139,11 @@ class Extension extends AbstractPluginIntegration {
 
 			$submission->add_result_props(
 				[
-					'pronamic_pay_redirect_url' => $payment->get_pay_redirect_url(),
+					'pronamic_pay_payment_id'     => $payment->get_id(),
+					'pronamic_pay_transaction_id' => $payment->get_transaction_id(),
+					'pronamic_pay_redirect_url'   => $payment->get_pay_redirect_url(),
 				]
 			);
-
-			\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 		} catch ( \Exception $e ) {
 			$submission->set_status( 'pronamic_pay_error' );
 
@@ -163,15 +164,20 @@ class Extension extends AbstractPluginIntegration {
 	 *
 	 * @param array<string, mixed> $result     Submission result.
 	 * @param WPCF7_Submission     $submission Submission.
+	 * @return array
 	 */
 	public function submission_result( array $result, WPCF7_Submission $submission ) {
-		return \array_merge(
-			$result,
-			[
-				'status'  => 'pronamic_pay_redirect',
-				'message' => \__( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
-			]
-		);
+		if ( \array_key_exists( 'pronamic_pay_redirect_url', $result ) ) {
+			$result = \array_merge(
+				$result,
+				[
+					'status'  => 'pronamic_pay_redirect',
+					'message' => \__( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
+				]
+			);
+		}
+
+		return $result;
 	}
 
 	/**
