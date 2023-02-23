@@ -37,20 +37,6 @@ class Extension extends AbstractPluginIntegration {
 	const SLUG = 'contact-form-7';
 
 	/**
-	 * Feedback response args.
-	 *
-	 * @var array<string, string>
-	 */
-	private $feedback_args;
-
-	/**
-	 * Payment.
-	 *
-	 * @var Payment|null
-	 */
-	private $payment;
-
-	/**
 	 * Construct Contact Form 7 plugin integration.
 	 */
 	public function __construct() {
@@ -97,38 +83,25 @@ class Extension extends AbstractPluginIntegration {
 		// Actions.
 		\add_action( 'wpcf7_before_send_mail', [ $this, 'before_send_mail' ], 10, 3 );
 		\add_action( 'wpcf7_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
-		\add_action( 'wpcf7_mail_sent', [ $this, 'wpcf7_disabled_scripts_redirect' ] );
-		\add_action( 'wpcf7_mail_failed', [ $this, 'wpcf7_disabled_scripts_redirect' ] );
+		\add_action( 'wpcf7_submit', [ $this, 'submit' ], 10, 2 );
 
 		// Filters.
 		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
 		\add_filter( 'wpcf7_collect_mail_tags', [ $this, 'collect_mail_tags' ] );
 		\add_filter( 'wpcf7_mail_tag_replaced', [ $this, 'replace_mail_tags' ], 10, 4 );
+		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 
-		$this->register_tags();
-	}
-
-	/**
-	 * Register tags.
-	 *
-	 * @return void
-	 */
-	public function register_tags() {
-		// Amount tag.
+		// Register tags.
 		new Tags\AmountTag();
-
-		// Payment method tag.
-		new Tags\PaymentMethodTag();
-
-		// Issuer tag.
 		new Tags\IssuerTag();
+		new Tags\PaymentMethodTag();
 	}
 
 	/**
 	 * Handle submit, before sending mail.
 	 *
 	 * @param WPCF7_ContactForm $form       Contact Form 7 form.
-	 * @param bool              $abort      Whether or not to abort submission.
+	 * @param bool              $abort      Whether to abort submission.
 	 * @param WPCF7_Submission  $submission Form submission.
 	 * @return void
 	 */
@@ -155,67 +128,68 @@ class Extension extends AbstractPluginIntegration {
 
 			$payment = Plugin::start_payment( $payment );
 
-			$this->payment = $payment;
-
-			$this->feedback_args = [
-				'status'                    => 'pronamic_pay_redirect',
-				'message'                   => __( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
-				'pronamic_pay_redirect_url' => $payment->get_pay_redirect_url(),
-			];
+			$submission->add_result_props(
+				[
+					'pronamic_pay_payment_id'     => $payment->get_id(),
+					'pronamic_pay_transaction_id' => $payment->get_transaction_id(),
+					'pronamic_pay_redirect_url'   => $payment->get_pay_redirect_url(),
+				]
+			);
 		} catch ( \Exception $e ) {
-			$this->feedback_args = [
-				'status'  => 'pronamic_pay_error',
-				'message' => sprintf(
-					'%s' . str_repeat( \PHP_EOL, 2 ) . '%s',
+			$submission->set_status( 'pronamic_pay_error' );
+
+			$submission->set_response(
+				\sprintf(
+					'%s' . \str_repeat( \PHP_EOL, 2 ) . '%s',
 					Plugin::get_default_error_message(),
 					$e->getMessage()
-				),
-			];
+				)
+			);
 
 			$abort = true;
 		}
-
-		\add_filter( 'wpcf7_feedback_response', [ $this, 'feedback_response' ], 10, 2 );
 	}
 
 	/**
-	 * Redirect when loading Contact Form 7 scripts has been disabled.
+	 * Submission result.
 	 *
+	 * @param array<string, mixed> $result     Submission result.
+	 * @param WPCF7_Submission     $submission Submission.
+	 * @return array
+	 */
+	public function submission_result( array $result, WPCF7_Submission $submission ) {
+		if ( \array_key_exists( 'pronamic_pay_redirect_url', $result ) ) {
+			$result = \array_merge(
+				$result,
+				[
+					'status'  => 'pronamic_pay_redirect',
+					'message' => \__( 'Please wait while redirecting for payment', 'pronamic_ideal' ),
+				]
+			);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Redirect on form submit if Contact Form 7 scripts have been disabled.
+	 *
+	 * @param WPCF7_ContactForm    $form   Form.
+	 * @param array<string, mixed> $result Submission result.
 	 * @return void
 	 */
-	public function wpcf7_disabled_scripts_redirect() {
-		if ( ! \has_filter( 'wpcf7_load_js' ) ) {
+	public function submit( WPCF7_ContactForm $form, $result ) {
+		// Check if scripts have been disabled.
+		if ( \function_exists( '\wpcf7_load_js' ) && \wpcf7_load_js() ) {
 			return;
 		}
 
-		$load_js = \apply_filters( 'wpcf7_load_js', true );
+		// Redirect.
+		if ( \array_key_exists( 'pronamic_pay_redirect_url', $result ) ) {
+			\wp_redirect( $result['pronamic_pay_redirect_url'] );
 
-		if ( false !== $load_js ) {
-			return;
+			exit;
 		}
-
-		$feedback_args = $this->feedback_args;
-
-		if ( ! \array_key_exists( 'pronamic_pay_redirect_url', $feedback_args ) ) {
-			return;
-		}
-
-		\wp_redirect( $feedback_args['pronamic_pay_redirect_url'] );
-
-		exit;
-	}
-
-	/**
-	 * Feedback response.
-	 *
-	 * @param array<string, mixed> $response REST API feedback response.
-	 * @param array<string, mixed> $result   Form submit result.
-	 * @return array<string, string>
-	 */
-	public function feedback_response( $response, $result ) {
-		$response = \wp_parse_args( $this->feedback_args, $response );
-
-		return $response;
 	}
 
 	/**
@@ -238,23 +212,17 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Collect mail tags.
 	 *
-	 * @param string[]|null $mail_tags Mail tags.
+	 * @param string[] $mail_tags Mail tags.
 	 * @return string[]
 	 */
-	public function collect_mail_tags( $mail_tags = null ) {
-		if ( ! \is_array( $mail_tags ) ) {
-			$mail_tags = [];
-		}
-
-		$mail_tags = \array_merge(
+	public function collect_mail_tags( $mail_tags ) {
+		return \array_merge(
 			$mail_tags,
 			[
 				'pronamic_payment_id',
 				'pronamic_transaction_id',
 			]
 		);
-
-		return $mail_tags;
 	}
 
 	/**
@@ -267,20 +235,15 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function replace_mail_tags( $replaced, $submitted, $html, $mail_tag ) {
-		// Default replacements.
-		$mail_tags = $this->collect_mail_tags();
+		// Replacements.
+		$submission = WPCF7_Submission::get_instance();
 
-		$replacements = \array_fill_keys( \array_values( $mail_tags ), '' );
+		$result = $submission->get_result();
 
-		// Payment replacements.
-		if ( $this->payment instanceof Payment ) {
-			$payment = $this->payment;
-
-			$replacements = [
-				'pronamic_payment_id'     => $payment->get_id(),
-				'pronamic_transaction_id' => $payment->get_transaction_id(),
-			];
-		}
+		$replacements = [
+			'pronamic_payment_id'     => \array_key_exists( 'pronamic_pay_payment_id', $result ) ? $result['pronamic_pay_payment_id'] : '',
+			'pronamic_transaction_id' => \array_key_exists( 'pronamic_pay_transaction_id', $result ) ? $result['pronamic_pay_transaction_id'] : '',
+		];
 
 		// Replace.
 		$tag_name = $mail_tag->tag_name();
