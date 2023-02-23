@@ -90,7 +90,7 @@ class Extension extends AbstractPluginIntegration {
 		// Actions.
 		\add_action( 'wpcf7_before_send_mail', [ $this, 'before_send_mail' ], 10, 3 );
 		\add_action( 'wpcf7_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
-		\add_action( 'wpcf7_submit', [ $this, 'submit' ] );
+		\add_action( 'wpcf7_submit', [ $this, 'submit' ], 10, 2 );
 
 		// Filters.
 		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
@@ -193,22 +193,22 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Redirect on form submit if Contact Form 7 scripts have been disabled.
 	 *
+	 * @param WPCF7_ContactForm    $form   Form.
+	 * @param array<string, mixed> $result Submission result.
 	 * @return void
 	 */
-	public function submit() {
+	public function submit( WPCF7_ContactForm $form, $result ) {
 		// Check if scripts have been disabled.
 		if ( \function_exists( '\wpcf7_load_js' ) && \wpcf7_load_js() ) {
 			return;
 		}
 
-		// Check payment.
-		if ( null === $this->payment ) {
-			return;
+		// Redirect.
+		if ( \array_key_exists( 'pronamic_pay_redirect_url', $result ) ) {
+			\wp_redirect( $result['pronamic_pay_redirect_url'] );
+
+			exit;
 		}
-
-		\wp_redirect( $this->payment->get_pay_redirect_url() );
-
-		exit;
 	}
 
 	/**
