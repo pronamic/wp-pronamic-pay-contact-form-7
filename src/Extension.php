@@ -83,13 +83,13 @@ class Extension extends AbstractPluginIntegration {
 		// Actions.
 		\add_action( 'wpcf7_before_send_mail', [ $this, 'before_send_mail' ], 10, 3 );
 		\add_action( 'wpcf7_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
-		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 		\add_action( 'wpcf7_submit', [ $this, 'submit' ], 10, 2 );
 
 		// Filters.
 		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
 		\add_filter( 'wpcf7_collect_mail_tags', [ $this, 'collect_mail_tags' ] );
 		\add_filter( 'wpcf7_mail_tag_replaced', [ $this, 'replace_mail_tags' ], 10, 4 );
+		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 
 		// Register tags.
 		new Tags\AmountTag();
