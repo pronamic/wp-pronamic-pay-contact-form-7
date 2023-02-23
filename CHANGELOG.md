@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.2.2] - 2023-02-23
+
+### Commits
+
+- Added support for multiple free text value options. ([84d9856](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/84d9856461da4f915fed5485bf60818162c120cf))
+- Updated payment start on form submit. ([631888a](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/631888a659fd8017bd78dc4162cf341cbb970dbc))
+Full set of changes: [`3.2.1...3.2.2`][3.2.2]
+
+[3.2.2]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.2.1...v3.2.2
+
 ## [3.2.1] - 2023-01-31
 ### Composer
 
