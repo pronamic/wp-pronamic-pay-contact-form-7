@@ -97,23 +97,10 @@ class Extension extends AbstractPluginIntegration {
 		\add_filter( 'wpcf7_collect_mail_tags', [ $this, 'collect_mail_tags' ] );
 		\add_filter( 'wpcf7_mail_tag_replaced', [ $this, 'replace_mail_tags' ], 10, 4 );
 
-		$this->register_tags();
-	}
-
-	/**
-	 * Register tags.
-	 *
-	 * @return void
-	 */
-	public function register_tags() {
-		// Amount tag.
+		// Register tags.
 		new Tags\AmountTag();
-
-		// Payment method tag.
-		new Tags\PaymentMethodTag();
-
-		// Issuer tag.
 		new Tags\IssuerTag();
+		new Tags\PaymentMethodTag();
 	}
 
 	/**
