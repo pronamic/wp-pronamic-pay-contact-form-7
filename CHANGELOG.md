@@ -7,6 +7,15 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.2.3] - 2023-03-03
+### Changed
+
+- Updated `.gitattributes`.
+
+Full set of changes: [`3.2.2...3.2.3`][3.2.3]
+
+[3.2.3]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.2.2...v3.2.3
+
 ## [3.2.2] - 2023-02-23
 
 ### Commits
