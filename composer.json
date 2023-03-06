@@ -4,6 +4,7 @@
 	"keywords": ["wordpress", "wp", "pay", "payments", "contact-form-7", "gateway", "extension", "pronamic"],
 	"homepage": "http://www.wp-pay.org/extensions/contact-form-7/",
 	"license": "GPL-3.0-or-later",
+	"type": "wordpress-plugin",
 	"authors": [
 		{
 			"name": "Pronamic",
