@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.2.4] - 2023-03-10
+
+### Commits
+
+- Set `wordpress-plugin` type for Composer (pronamic/wp-pronamic-pay-with-mollie-for-contact-form-7#3). ([7a54710](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/7a54710bc223b0db69a80dfda050e379d0ef2e5b))
+
+Full set of changes: [`3.2.3...3.2.4`][3.2.4]
+
+[3.2.4]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.2.3...v3.2.4
+
 ## [3.2.3] - 2023-03-03
 ### Changed
 
