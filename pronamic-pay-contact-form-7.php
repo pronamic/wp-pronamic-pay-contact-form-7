@@ -30,7 +30,15 @@
 add_filter(
 	'pronamic_pay_plugin_integrations',
 	function ( $integrations ) {
-		$integrations[] = new \Pronamic\WordPress\Pay\Extensions\ContactForm7\Extension();
+		$classes = [
+			\Pronamic\WordPress\Pay\Extensions\ContactForm7\Extension::class,
+		];
+
+		foreach ( $classes as $class ) {
+			if ( ! array_key_exists( $class, $integrations ) ) {
+				$integrations[ $class ] = new $class();
+			}
+		}
 
 		return $integrations;
 	}
