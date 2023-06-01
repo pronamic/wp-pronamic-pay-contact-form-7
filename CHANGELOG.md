@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.2.5] - 2023-06-01
+
+### Commits
+
+- Switch from `pronamic/wp-deployer` to `pronamic/pronamic-cli`. ([6407876](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/6407876b1eaba9d93c0a969f915ed416a423d3f1))
+- Prevent duplicate integration registration. ([c69b923](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/c69b923dde07ee3f83031091ebd1aa47f438f627))
+
+Full set of changes: [`3.2.4...3.2.5`][3.2.5]
+
+[3.2.5]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.2.4...v3.2.5
+
 ## [3.2.4] - 2023-03-10
 
 ### Commits
