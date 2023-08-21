@@ -235,8 +235,11 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function replace_mail_tags( $replaced, $submitted, $html, $mail_tag ) {
-		// Replacements.
 		$submission = WPCF7_Submission::get_instance();
+
+		if ( null === $submission ) {
+			return $replaced;
+		}
 
 		$result = $submission->get_result();
 
