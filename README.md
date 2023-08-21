@@ -23,3 +23,12 @@ You can achieve this by editing the form and including the following under 'Addi
 ```
 skip_mail: on
 ```
+
+## Links
+
+- https://www.pronamicpay.com/
+- https://www.pronamic.eu/
+- https://wordpress.org/plugins/pronamic-ideal/
+- https://wordpress.org/plugins/pronamic-pay-with-mollie-for-contact-form-7/
+- https://wordpress.org/plugins/contact-form-7/
+- https://github.com/rocklobster-in/contact-form-7
