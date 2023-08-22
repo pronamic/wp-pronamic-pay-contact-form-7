@@ -118,6 +118,8 @@ class Pronamic {
 						$options[ $after ][] = $labels[ $key ];
 					}
 
+					$valid_value = empty( $options ) ? $value : null;
+
 					// Search for value in options.
 					foreach ( $options as $after => $labels ) {
 						if ( false !== \array_search( $value, $labels, true ) ) {
@@ -126,18 +128,28 @@ class Pronamic {
 								$free_text_name = sprintf( '%s_free_text', $tag->name );
 
 								if ( \array_key_exists( $free_text_name, $_POST ) ) {
-									$value = trim( \sanitize_text_field( \wp_unslash( $_POST[ $free_text_name ] ) ) );
+									$valid_value = trim( \sanitize_text_field( \wp_unslash( $_POST[ $free_text_name ] ) ) );
 								}
 
 								break;
 							}
 
 							// Set 'after value' as value.
-							$value = $after;
+							$valid_value = $after;
 
 							break;
 						}
+
+						if ( $after === $value ) {
+							$valid_value = $value;
+						}
 					}
+
+					if ( null === $valid_value ) {
+						throw new \Exception( sprintf( __( 'Unable to process unexpected submission value `%s`.', 'pronamic_ideal' ), $value ) );
+					}
+
+					$value = $valid_value;
 				}
 
 				// Parse value.
