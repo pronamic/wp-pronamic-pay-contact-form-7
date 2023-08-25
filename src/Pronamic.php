@@ -47,7 +47,7 @@ class Pronamic {
 	 *
 	 * @param WPCF7_Submission $submission Submission.
 	 * @param string           $type       Type to search for.
-	 * @return string|null
+	 * @return mixed
 	 */
 	public static function get_submission_value( WPCF7_Submission $submission, $type ) {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
@@ -109,7 +109,7 @@ class Pronamic {
 
 					// Set parsed value as result or add to existing money result.
 					if ( null !== $value ) {
-						$result = ( null === $result ? $value : $result->add( $value ) );
+						$result = ( $result instanceof Money ? $result->add( $value ) : $value );
 					}
 
 					break;
