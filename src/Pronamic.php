@@ -19,7 +19,6 @@ use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use WPCF7_FormTagsManager;
-use WPCF7_Pipes;
 use WPCF7_Submission;
 
 /**
@@ -46,10 +45,11 @@ class Pronamic {
 	/**
 	 * Get submission value.
 	 *
-	 * @param string $type Type to search for.
+	 * @param WPCF7_Submission $submission Submission.
+	 * @param string           $type       Type to search for.
 	 * @return mixed
 	 */
-	public static function get_submission_value( $type ) {
+	public static function get_submission_value( WPCF7_Submission $submission, $type ) {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		$result = null;
 
@@ -80,80 +80,41 @@ class Pronamic {
 				continue;
 			}
 
-			$value = array_key_exists( $tag->name, $_POST ) ? \sanitize_text_field( \wp_unslash( $_POST[ $tag->name ] ) ) : '';
+			// Submission value.
+			$value = $submission->get_posted_string( $tag->name );
 
-			$value = trim( $value );
-
-			if ( 'checkbox' === $tag->basetype ) {
-				$value = \filter_input( \INPUT_POST, $tag->name, \FILTER_DEFAULT, \FILTER_REQUIRE_ARRAY );
-			}
-
-			// Check empty value.
 			if ( empty( $value ) ) {
 				continue;
 			}
 
-			$values = (array) $value;
+			switch ( $type ) {
+				case 'amount':
+					/**
+					 * Contact Form 7 concatenates the field option value with user input for free text fields. We
+					 * are only interested in the input value as amount.
+					 *
+					 * @link https://github.com/rocklobster-in/contact-form-7/blob/2cfaa472fa485c6d3366fcdd80701fdaf7f9e425/includes/submission.php#L434-L437
+					 */
+					if ( \wpcf7_form_tag_supports( $tag->type, 'selectable-values' ) && $tag->has_option( 'free_text' ) ) {
+						$values = \WPCF7_USE_PIPE ? $tag->pipes->collect_afters() : $tag->values;
 
-			// Loop values.
-			foreach ( $values as $value ) {
-				/*
-				 * Try to get value from piped field values.
-				 *
-				 * @link https://contactform7.com/selectable-recipient-with-pipes/
-				 */
-				if ( $tag->pipes instanceof WPCF7_Pipes ) {
-					// Make multidimensional array with pipe options by value.
-					$options = [];
+						$last_value = end( $values );
 
-					$labels = $tag->pipes->collect_befores();
-
-					foreach ( $tag->pipes->collect_afters() as $key => $after ) {
-						// Make sure array for value exists.
-						if ( ! \array_key_exists( $after, $options ) ) {
-							$options[ $after ] = [];
-						}
-
-						// Add option to value array.
-						$options[ $after ][] = $labels[ $key ];
-					}
-
-					// Search for value in options.
-					foreach ( $options as $after => $labels ) {
-						if ( false !== \array_search( $value, $labels, true ) ) {
-							// Handle free text input.
-							if ( $tag->has_option( 'free_text' ) && end( $tag->values ) === $value ) {
-								$free_text_name = sprintf( '%s_free_text', $tag->name );
-
-								if ( \array_key_exists( $free_text_name, $_POST ) ) {
-									$value = trim( \sanitize_text_field( \wp_unslash( $_POST[ $free_text_name ] ) ) );
-								}
-
-								break;
-							}
-
-							// Set 'after value' as value.
-							$value = $after;
-
-							break;
+						if ( \str_starts_with( $value, $last_value . ' ' ) ) {
+							$value = substr( $value, strlen( $last_value . ' ' ) );
 						}
 					}
-				}
 
-				// Parse value.
-				switch ( $type ) {
-					case 'amount':
-						$value = Tags\AmountTag::parse_value( $value );
+					$value = Tags\AmountTag::parse_value( $value );
 
-						// Set parsed value as result or add to existing money result.
-						if ( null !== $value ) {
-							$result = ( null === $result ? $value : $result->add( $value ) );
-						}
+					// Set parsed value as result or add to existing money result.
+					if ( null !== $value ) {
+						$result = ( $result instanceof Money ? $result->add( $value ) : $value );
+					}
 
-						break;
-					default:
-						$result = $value;
-				}
+					break;
+				default:
+					$result = $value;
 			}
 
 			// Prefer tag with option (`pronamic_pay_email`) over tag name match (e.g. `email`).
@@ -179,7 +140,7 @@ class Pronamic {
 		$payment = new Payment();
 
 		// Check amount.
-		$amount = self::get_submission_value( 'amount' );
+		$amount = self::get_submission_value( $submission, 'amount' );
 
 		if ( null === $amount ) {
 			return null;
@@ -193,7 +154,7 @@ class Pronamic {
 		}
 
 		// Check active payment method.
-		$payment_method = self::get_submission_value( 'method' );
+		$payment_method = self::get_submission_value( $submission, 'method' );
 
 		if ( ! empty( $payment_method ) ) {
 			if ( ! PaymentMethods::is_active( $payment_method ) ) {
@@ -220,7 +181,7 @@ class Pronamic {
 		);
 
 		// Description.
-		$description = self::get_submission_value( 'description' );
+		$description = self::get_submission_value( $submission, 'description' );
 
 		if ( null === $description ) {
 			$description = sprintf(
@@ -231,7 +192,7 @@ class Pronamic {
 		}
 
 		// Payment method.
-		$issuer = self::get_submission_value( 'issuer' );
+		$issuer = self::get_submission_value( $submission, 'issuer' );
 
 		$payment->title = $title;
 
@@ -245,12 +206,12 @@ class Pronamic {
 
 		// Contact.
 		$contact_name = new ContactName();
-		$contact_name->set_first_name( self::get_submission_value( 'first_name' ) );
-		$contact_name->set_last_name( self::get_submission_value( 'last_name' ) );
+		$contact_name->set_first_name( self::get_submission_value( $submission, 'first_name' ) );
+		$contact_name->set_last_name( self::get_submission_value( $submission, 'last_name' ) );
 
 		$customer = new Customer();
 		$customer->set_name( $contact_name );
-		$customer->set_email( self::get_submission_value( 'email' ) );
+		$customer->set_email( self::get_submission_value( $submission, 'email' ) );
 
 		$payment->set_customer( $customer );
 
@@ -276,9 +237,9 @@ class Pronamic {
 		];
 
 		foreach ( $address_fields as $field ) {
-			$billing_value  = self::get_submission_value( 'billing_address_' . $field );
-			$shipping_value = self::get_submission_value( 'shipping_address_' . $field );
-			$address_value  = self::get_submission_value( 'address_' . $field );
+			$billing_value  = self::get_submission_value( $submission, 'billing_address_' . $field );
+			$shipping_value = self::get_submission_value( $submission, 'shipping_address_' . $field );
+			$address_value  = self::get_submission_value( $submission, 'address_' . $field );
 
 			if ( ! empty( $billing_value ) || ! empty( $address_value ) ) {
 				$callback = [ $billing_address, 'set_' . $field ];
