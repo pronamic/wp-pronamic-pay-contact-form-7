@@ -101,7 +101,7 @@ class Pronamic {
 						$last_value = end( $values );
 
 						if ( \str_starts_with( $value, $last_value . ' ' ) ) {
-							$value = substr_replace( $value, '', 0, strlen( $last_value . ' ' ) );
+							$value = substr( $value, strlen( $last_value . ' ' ) );
 						}
 					}
 
