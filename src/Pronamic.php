@@ -89,6 +89,22 @@ class Pronamic {
 
 			switch ( $type ) {
 				case 'amount':
+					/**
+					 * Contact Form 7 concatenates the field option value with user input for free text fields. We
+					 * are only interested in the input value as amount.
+					 *
+					 * @link https://github.com/rocklobster-in/contact-form-7/blob/2cfaa472fa485c6d3366fcdd80701fdaf7f9e425/includes/submission.php#L434-L437
+					 */
+					if ( \wpcf7_form_tag_supports( $tag->type, 'selectable-values' ) && $tag->has_option( 'free_text' ) ) {
+						$values = \WPCF7_USE_PIPE ? $tag->pipes->collect_afters() : $tag->values;
+
+						$last_value = end( $values );
+
+						if ( \str_starts_with( $value, $last_value . ' ' ) ) {
+							$value = substr_replace( $value, '', 0, strlen( $last_value . ' ' ) );
+						}
+					}
+
 					$value = Tags\AmountTag::parse_value( $value );
 
 					// Set parsed value as result or add to existing money result.
