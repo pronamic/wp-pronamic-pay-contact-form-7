@@ -7,6 +7,28 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.3.0] - 2023-08-28
+
+### Changed
+
+- Improved processing of form submission data.
+
+### Fixed
+
+- Fixed compatibility with plugin "Send PDF for Contact Form 7".
+
+### Commits
+
+- Use `substr()` instead of `substr_replace()`. ([f245ee2](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/f245ee2daf483d1ae000a21f95a7fcb88581f673))
+- Fixed "Cannot call method add() on Pronamic\WordPress\Money\Money|string". ([aa98a06](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/aa98a065b1a7c8282ee877bafbd7d4c7b87613a0))
+- Improve handling free text value. ([d13802a](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/d13802a2244ef7ccd525b448b64979c94f965b23))
+- Use `$submission->get_posted_string( $name )` for submission value. ([3ce7845](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/3ce7845de705a5fd69e5607b1895f19c4a5caf86))
+- Check if submission is not null to fix issue #10. ([6cff3de](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/6cff3decf1e7b66a91d76ac50cd7b8140662a556))
+
+Full set of changes: [`3.2.5...3.3.0`][3.3.0]
+
+[3.3.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.2.5...v3.3.0
+
 ## [3.2.5] - 2023-06-01
 
 ### Commits
