@@ -60,7 +60,6 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function setup() {
 		\add_filter( 'pronamic_payment_source_description_' . self::SLUG, [ $this, 'source_description' ], 10, 2 );
-		\add_filter( 'pronamic_subscription_source_description_' . self::SLUG, [ $this, 'subscription_source_description' ], 10, 2 );
 
 		// Check if dependencies are met and integration is active.
 		if ( ! $this->is_active() ) {
@@ -68,7 +67,6 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, [ $this, 'source_text' ], 10, 2 );
-		\add_filter( 'pronamic_subscription_source_text_' . self::SLUG, [ $this, 'subscription_source_text' ], 10, 2 );
 
 		// Actions.
 		\add_action( 'wpcf7_init', [ $this, 'init' ] );
@@ -86,7 +84,6 @@ class Extension extends AbstractPluginIntegration {
 		\add_action( 'wpcf7_submit', [ $this, 'submit' ], 10, 2 );
 
 		// Filters.
-		\add_filter( 'pronamic_pay_subscription_amount_editable_' . self::SLUG, '__return_true' );
 		\add_filter( 'wpcf7_collect_mail_tags', [ $this, 'collect_mail_tags' ] );
 		\add_filter( 'wpcf7_mail_tag_replaced', [ $this, 'replace_mail_tags' ], 10, 4 );
 		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
@@ -277,28 +274,6 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function source_description( $description, Payment $payment ) {
-		return __( 'Contact Form 7 Entry', 'pronamic_ideal' );
-	}
-
-	/**
-	 * Subscription source text.
-	 *
-	 * @param string       $text         Source text.
-	 * @param Subscription $subscription Subscription.
-	 * @return string
-	 */
-	public function subscription_source_text( $text, Subscription $subscription ) {
-		return __( 'Contact Form 7', 'pronamic_ideal' );
-	}
-
-	/**
-	 * Subscription source description.
-	 *
-	 * @param string       $description  Description.
-	 * @param Subscription $subscription Subscription.
-	 * @return string
-	 */
-	public function subscription_source_description( $description, Subscription $subscription ) {
 		return __( 'Contact Form 7 Entry', 'pronamic_ideal' );
 	}
 }
