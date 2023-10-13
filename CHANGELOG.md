@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.3.1] - 2023-10-13
+
+### Commits
+
+- Removed some left overs, subscriptions are not supported in current state. ([a8aef13](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/a8aef137ff427d3c604c0ccf8f95803831b4f8d5))
+
+Full set of changes: [`3.3.0...3.3.1`][3.3.1]
+
+[3.3.1]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.3.0...v3.3.1
+
 ## [3.3.0] - 2023-08-28
 
 ### Changed
