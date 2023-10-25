@@ -94,7 +94,7 @@ class IssuerTag {
 		$html_options = '';
 
 		foreach ( $issuer_field->get_options() as $option ) {
-			$html_options .= $option->render();
+			$html_options .= $option->get_element()->render();
 		}
 
 		$html = \sprintf(
