@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.3.2] - 2023-10-30
+
+### Commits
+
+- Fixed "Fatal error: Uncaught Error: Call to undefined method Pronamic\WordPress\Pay\Fields\SelectFieldOption::render()" (method has been removed in https://github.com/pronamic/wp-pay-core/commit/519532b7d65fb68a5374341ea1c1934885b28e5c). ([4f2f437](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/4f2f43706a62e4929ab21b274f89f84954276419))
+
+Full set of changes: [`3.3.1...3.3.2`][3.3.2]
+
+[3.3.2]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.3.1...v3.3.2
+
 ## [3.3.1] - 2023-10-13
 
 ### Commits
