@@ -6,6 +6,7 @@
 		"./tests/wp-env-mail.php",
 		"pronamic/wp-pronamic-pay-test-helper",
 		"https://downloads.wordpress.org/plugin/contact-form-7.5.6.2.zip",
+		"https://downloads.wordpress.org/plugin/cf7-conditional-fields.zip",
 		"https://downloads.wordpress.org/plugin/flamingo.zip",
 		"https://downloads.wordpress.org/plugin/pronamic-client.zip",
 		"https://downloads.wordpress.org/plugin/pronamic-ideal.zip",

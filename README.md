@@ -32,3 +32,4 @@ skip_mail: on
 - https://wordpress.org/plugins/pronamic-pay-with-mollie-for-contact-form-7/
 - https://wordpress.org/plugins/contact-form-7/
 - https://github.com/rocklobster-in/contact-form-7
+- https://wordpress.org/plugins/cf7-conditional-fields/

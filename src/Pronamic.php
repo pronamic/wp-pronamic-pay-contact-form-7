@@ -55,7 +55,12 @@ class Pronamic {
 
 		$prefixed_type = 'pronamic_pay_' . $type;
 
-		// Hidden fields.
+		/**
+		 * Hidden fields may arise when using the "Conditional Fields for Contact Form 7" plugin.
+		 * 
+		 * @link https://wordpress.org/plugins/cf7-conditional-fields/
+		 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/83122efa3755f1d4b667aed3e3e7c2ae0f813faa
+		 */
 		$hidden_fields = \filter_input( \INPUT_POST, '_wpcf7cf_hidden_group_fields' );
 
 		if ( ! empty( $hidden_fields ) ) {
