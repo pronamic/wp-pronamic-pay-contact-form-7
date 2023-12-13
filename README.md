@@ -33,3 +33,5 @@ skip_mail: on
 - https://wordpress.org/plugins/contact-form-7/
 - https://github.com/rocklobster-in/contact-form-7
 - https://wordpress.org/plugins/cf7-conditional-fields/
+- https://contactform7.com/
+- https://contactform7.com/tag-syntax/
