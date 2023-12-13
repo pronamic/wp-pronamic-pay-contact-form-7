@@ -5,7 +5,7 @@
 ## Amount Field
 
 The amount field can be a `text`, `number`, `drop-down menu`, `checkboxes` or `radio buttons` field,
-it requires the `pronamic_pay_amount` attribute:
+it requires the `pronamic_pay_amount` option:
 
 ```
 [number pronamic_pay_amount]
