@@ -52,6 +52,13 @@ class Pronamic {
 	public static function get_submission_payment( WPCF7_Submission $submission ) {
 		$form = $submission->get_contact_form();
 
+		// Gateway.
+		$gateway = self::get_default_gateway();
+
+		if ( null === $gateway ) {
+			return null;
+		}
+
 		$submission_helper = new SubMissionHelper( $submission );
 
 		// Total.
@@ -80,13 +87,6 @@ class Pronamic {
 		$payment = new Payment();
 
 		$payment->set_total_amount( $total );
-
-		// Check gateway.
-		$gateway = self::get_default_gateway();
-
-		if ( null === $gateway ) {
-			return null;
-		}
 
 		// Check active payment method.
 		$payment_method = $submission_helper->get_value_by_tag_basetype_or_option( 'pronamic_pay_method', 'pronamic_pay_method' );
