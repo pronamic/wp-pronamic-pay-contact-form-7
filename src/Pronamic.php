@@ -59,7 +59,7 @@ class Pronamic {
 			return null;
 		}
 
-		$submission_helper = new SubMissionHelper( $submission );
+		$submission_helper = new SubmissionHelper( $submission );
 
 		// Total.
 		$total  = new Money();
