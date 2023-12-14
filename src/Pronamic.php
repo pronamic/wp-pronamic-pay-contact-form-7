@@ -14,6 +14,7 @@ use Pronamic\WordPress\Pay\Core\Gateway;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Money\Money;
+use Pronamic\WordPress\Money\Parser;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
@@ -43,97 +44,6 @@ class Pronamic {
 	}
 
 	/**
-	 * Get submission value.
-	 *
-	 * @param WPCF7_Submission $submission Submission.
-	 * @param string           $type       Type to search for.
-	 * @return mixed
-	 */
-	public static function get_submission_value( WPCF7_Submission $submission, $type ) {
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		$result = null;
-
-		$prefixed_type = 'pronamic_pay_' . $type;
-
-		/**
-		 * Hidden fields may arise when using the "Conditional Fields for Contact Form 7" plugin.
-		 * 
-		 * @link https://wordpress.org/plugins/cf7-conditional-fields/
-		 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/83122efa3755f1d4b667aed3e3e7c2ae0f813faa
-		 */
-		$hidden_fields = \filter_input( \INPUT_POST, '_wpcf7cf_hidden_group_fields' );
-
-		if ( ! empty( $hidden_fields ) ) {
-			$hidden_fields = \json_decode( stripslashes( $hidden_fields ) );
-		}
-
-		if ( ! \is_array( $hidden_fields ) ) {
-			$hidden_fields = [];
-		}
-
-		// @link https://contactform7.com/tag-syntax/
-		$tags = WPCF7_FormTagsManager::get_instance()->get_scanned_tags();
-
-		foreach ( $tags as $tag ) {
-			// Check if tag base type or name is requested type or tag has requested type as option.
-			if ( ! \in_array( $tag->basetype, [ $type, $prefixed_type ], true ) && ! $tag->has_option( $prefixed_type ) && $prefixed_type !== $tag->name ) {
-				continue;
-			}
-
-			// Check if field is not hidden.
-			if ( \in_array( $tag->name, $hidden_fields, true ) ) {
-				continue;
-			}
-
-			// Submission value.
-			$value = $submission->get_posted_string( $tag->name );
-
-			if ( empty( $value ) ) {
-				continue;
-			}
-
-			switch ( $type ) {
-				case 'amount':
-					/**
-					 * Contact Form 7 concatenates the field option value with user input for free text fields. We
-					 * are only interested in the input value as amount.
-					 *
-					 * @link https://github.com/rocklobster-in/contact-form-7/blob/2cfaa472fa485c6d3366fcdd80701fdaf7f9e425/includes/submission.php#L434-L437
-					 */
-					if ( \wpcf7_form_tag_supports( $tag->type, 'selectable-values' ) && $tag->has_option( 'free_text' ) ) {
-						$values = \WPCF7_USE_PIPE ? $tag->pipes->collect_afters() : $tag->values;
-
-						$last_value = end( $values );
-
-						if ( \str_starts_with( $value, $last_value . ' ' ) ) {
-							$value = substr( $value, strlen( $last_value . ' ' ) );
-						}
-					}
-
-					$value = Tags\AmountTag::parse_value( $value );
-
-					// Set parsed value as result or add to existing money result.
-					if ( null !== $value ) {
-						$result = ( $result instanceof Money ? $result->add( $value ) : $value );
-					}
-
-					break;
-				default:
-					$result = $value;
-			}
-
-			// Prefer tag with option (`pronamic_pay_email`) over tag name match (e.g. `email`).
-			if ( $tag->has_option( $prefixed_type ) ) {
-				return $result;
-			}
-		}
-
-		// phpcs:enable WordPress.Security.NonceVerification.Missing
-
-		return $result;
-	}
-
-	/**
 	 * Get Pronamic payment from Contact Form 7 form.
 	 *
 	 * @param WPCF7_Submission $submission Contact Form 7 form submission.
@@ -142,14 +52,34 @@ class Pronamic {
 	public static function get_submission_payment( WPCF7_Submission $submission ) {
 		$form = $submission->get_contact_form();
 
-		$payment = new Payment();
+		$submission_helper = new SubMissionHelper( $submission );
 
-		// Check amount.
-		$amount = self::get_submission_value( $submission, 'amount' );
+		// Total.
+		$total  = new Money();
+		$parser = new Parser();
 
-		if ( null === $amount ) {
+		$tags = $submission_helper->get_tags_by_basetype_or_option( 'pronamic_pay_amount', 'pronamic_pay_amount' );
+
+		foreach ( $tags as $tag ) {
+			$value = $submission_helper->get_value_by_tag( $tag );
+
+			try {
+				$amount = $parser->parse( $value );
+
+				$total = $total->add( $amount );
+			} catch ( \Exception $e ) {
+				continue;
+			}
+		}
+
+		if ( $total->is_zero() ) {
 			return null;
 		}
+
+		// Payment.
+		$payment = new Payment();
+
+		$payment->set_total_amount( $total );
 
 		// Check gateway.
 		$gateway = self::get_default_gateway();
@@ -159,7 +89,7 @@ class Pronamic {
 		}
 
 		// Check active payment method.
-		$payment_method = self::get_submission_value( $submission, 'method' );
+		$payment_method = $submission_helper->get_value_by_tag_basetype_or_option( 'pronamic_pay_method', 'pronamic_pay_method' );
 
 		if ( ! empty( $payment_method ) ) {
 			if ( ! PaymentMethods::is_active( $payment_method ) ) {
@@ -186,9 +116,9 @@ class Pronamic {
 		);
 
 		// Description.
-		$description = self::get_submission_value( $submission, 'description' );
+		$description = $submission_helper->get_value_by_tag_option( 'pronamic_pay_description' );
 
-		if ( null === $description ) {
+		if ( '' === $description ) {
 			$description = sprintf(
 				/* translators: %s: payment number */
 				__( 'Payment %s', 'pronamic_ideal' ),
@@ -197,7 +127,7 @@ class Pronamic {
 		}
 
 		// Payment method.
-		$issuer = self::get_submission_value( $submission, 'issuer' );
+		$issuer = $submission_helper->get_value_by_tag_basetype_or_option( 'pronamic_pay_issuer', 'pronamic_pay_issuer' );
 
 		$payment->title = $title;
 
@@ -206,17 +136,14 @@ class Pronamic {
 		$payment->set_meta( 'issuer', $issuer );
 		$payment->set_source( 'contact-form-7' );
 
-		// Total amount.
-		$payment->set_total_amount( new Money( $amount->get_value() ) );
-
 		// Contact.
 		$contact_name = new ContactName();
-		$contact_name->set_first_name( self::get_submission_value( $submission, 'first_name' ) );
-		$contact_name->set_last_name( self::get_submission_value( $submission, 'last_name' ) );
+		$contact_name->set_first_name( $submission_helper->get_value_by_tag_option( 'pronamic_pay_first_name' ) );
+		$contact_name->set_last_name( $submission_helper->get_value_by_tag_option( 'pronamic_pay_last_name' ) );
 
 		$customer = new Customer();
 		$customer->set_name( $contact_name );
-		$customer->set_email( self::get_submission_value( $submission, 'email' ) );
+		$customer->set_email( $submission_helper->get_value_by_tag_option_or_basetype( 'pronamic_pay_email', 'email' ) );
 
 		$payment->set_customer( $customer );
 
@@ -242,9 +169,9 @@ class Pronamic {
 		];
 
 		foreach ( $address_fields as $field ) {
-			$billing_value  = self::get_submission_value( $submission, 'billing_address_' . $field );
-			$shipping_value = self::get_submission_value( $submission, 'shipping_address_' . $field );
-			$address_value  = self::get_submission_value( $submission, 'address_' . $field );
+			$billing_value  = $submission_helper->get_value_by_tag_option( 'pronamic_pay_billing_address_' . $field );
+			$shipping_value = $submission_helper->get_value_by_tag_option( 'pronamic_pay_shipping_address_' . $field );
+			$address_value  = $submission_helper->get_value_by_tag_option( 'pronamic_pay_address_' . $field );
 
 			if ( ! empty( $billing_value ) || ! empty( $address_value ) ) {
 				$callback = [ $billing_address, 'set_' . $field ];
