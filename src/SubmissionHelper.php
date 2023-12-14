@@ -34,6 +34,19 @@ class SubmissionHelper {
 	}
 
 	/**
+	 * Get tags by filter.
+	 * 
+	 * @param callable $callback Filter function.
+	 * @return WPCF7_FormTag[]
+	 */
+	private function get_tags_by_filter( $callback ) {
+		return \array_filter(
+			$this->submission->get_contact_form()->scan_form_tags(),
+			$callback
+		);
+	}
+
+	/**
 	 * Get tags by basetype or option.
 	 * 
 	 * @param string $basetype Basetype.
@@ -41,16 +54,11 @@ class SubmissionHelper {
 	 * @return WPCF7_FormTag[]
 	 */
 	public function get_tags_by_basetype_or_option( $basetype, $option ) {
-		$tags = $this->submission->get_contact_form()->scan_form_tags();
-
-		$tags = array_filter(
-			$tags,
+		return $this->get_tags_by_filter(
 			function ( $tag ) use ( $basetype, $option ) {
 				return ( $tag->basetype === $basetype ) || $tag->has_option( $option );
 			}
 		);
-
-		return $tags;
 	}
 
 	/**
@@ -60,16 +68,11 @@ class SubmissionHelper {
 	 * @return WPCF7_FormTag[]
 	 */
 	private function get_tags_by_basetype( $basetype ) {
-		$tags = $this->submission->get_contact_form()->scan_form_tags();
-
-		$tags = array_filter(
-			$tags,
+		return $this->get_tags_by_filter(
 			function ( $tag ) use ( $basetype ) {
 				return ( $tag->basetype === $basetype );
 			}
 		);
-
-		return $tags;
 	}
 
 	/**
@@ -79,16 +82,11 @@ class SubmissionHelper {
 	 * @return WPCF7_FormTag[]
 	 */
 	private function get_tags_by_option( $option ) {
-		$tags = $this->submission->get_contact_form()->scan_form_tags();
-
-		$tags = array_filter(
-			$tags,
+		return $this->get_tags_by_filter(
 			function ( $tag ) use ( $option ) {
 				return $tag->has_option( $option );
 			}
 		);
-
-		return $tags;
 	}
 
 	/**
