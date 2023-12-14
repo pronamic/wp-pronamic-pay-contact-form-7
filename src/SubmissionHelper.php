@@ -92,6 +92,33 @@ class SubmissionHelper {
 	}
 
 	/**
+	 * Get hidden fields.
+	 *
+	 * Hidden fields may arise when using the "Conditional Fields for Contact Form 7" plugin.
+	 * 
+	 * @link https://wordpress.org/plugins/cf7-conditional-fields/
+	 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/83122efa3755f1d4b667aed3e3e7c2ae0f813faa
+	 * @return string[]
+	 */
+	private function get_hidden_fields() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by Contact Form 7.
+		if ( ! \array_key_exists( '_wpcf7cf_hidden_group_fields', $_POST ) ) {
+			return [];
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by Contact Form 7.
+		$value = \sanitize_text_field( \wp_unslash( $_POST['_wpcf7cf_hidden_group_fields'] ) );
+
+		$data = \json_decode( $value );
+
+		if ( \is_array( $data ) ) {
+			return $data;
+		}
+
+		return [];
+	}
+
+	/**
 	 * Get value by tag.
 	 * 
 	 * @param WPCF7_FormTag $tag Tag.
@@ -114,6 +141,15 @@ class SubmissionHelper {
 			if ( \str_starts_with( $value, $last_value . ' ' ) ) {
 				$value = \substr( $value, \strlen( $last_value . ' ' ) );
 			}
+		}
+
+		/**
+		 * Hidden fields.
+		 */
+		$hidden_fields = $this->get_hidden_fields();
+
+		if ( \in_array( $tag->name, $hidden_fields, true ) ) {
+			$value = '';
 		}
 
 		return $value;
