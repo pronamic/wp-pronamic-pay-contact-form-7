@@ -156,9 +156,10 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Submission result.
 	 *
+	 * @link https://github.com/rocklobster-in/contact-form-7/blob/v5.8.4/includes/submission.php#L169-L199
 	 * @param array<string, mixed> $result     Submission result.
 	 * @param WPCF7_Submission     $submission Submission.
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function submission_result( array $result, WPCF7_Submission $submission ) {
 		if ( \array_key_exists( 'pronamic_pay_redirect_url', $result ) ) {
