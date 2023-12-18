@@ -74,56 +74,10 @@ module.exports = function( grunt ) {
 					'js/admin.min.js': 'js/admin.js'
 				}
 			}
-		},
-
-		// Sass Lint
-		sasslint: {
-			options: {
-				configFile: '.sass-lint.yml'
-			},
-			target: [
-				'scss/**/*.scss'
-			]
-		},
-
-		// Compass
-		compass: {
-			build: {
-				options: {
-					sassDir: 'scss',
-					cssDir: 'css'
-				}
-			}
-		},
-
-		// PostCSS
-		postcss: {
-			options: {
-				map: {
-					inline: false,
-					annotation: false
-				},
-
-				processors: [
-					require( 'autoprefixer' )( { browsers: 'last 2 versions' } )
-				]
-			},
-			dist: {
-				src: 'css/admin.css'
-			}
-		},
-
-		// CSS min
-		cssmin: {
-			assets: {
-				files: {
-					'css/admin.min.css': 'css/admin.css'
-				}
-			}
 		}
 	} );
 
 	// Default task(s).
 	grunt.registerTask( 'default', [ 'jshint', 'phplint', 'phpmd', 'phpcs', 'phpunit' ] );
-	grunt.registerTask( 'assets', [ 'sasslint', 'jshint', 'uglify', 'compass', 'postcss', 'cssmin' ] );
+	grunt.registerTask( 'assets', [ 'jshint', 'uglify' ] );
 };
