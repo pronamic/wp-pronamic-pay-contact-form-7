@@ -8,11 +8,6 @@ module.exports = function( grunt ) {
 		// Package
 		pkg: grunt.file.readJSON( 'package.json' ),
 
-		// PHPLint
-		phplint: {
-			all: [ 'src/**/*.php' ]
-		},
-
 		// PHP Mess Detector
 		phpmd: {
 			application: {
@@ -50,6 +45,6 @@ module.exports = function( grunt ) {
 	} );
 
 	// Default task(s).
-	grunt.registerTask( 'default', [ 'jshint', 'phplint', 'phpmd' ] );
+	grunt.registerTask( 'default', [ 'jshint', 'phpmd' ] );
 	grunt.registerTask( 'assets', [ 'jshint', 'uglify' ] );
 };
