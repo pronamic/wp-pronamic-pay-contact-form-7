@@ -179,7 +179,7 @@ class Extension extends AbstractPluginIntegration {
 	 * Redirect on form submit if Contact Form 7 scripts have been disabled.
 	 *
 	 * @param WPCF7_ContactForm    $form   Form.
-	 * @param array<string, mixed> $result Submission result.
+	 * @param array{'pronamic_pay_redirect_url'?: string} $result Submission result.
 	 * @return void
 	 */
 	public function submit( WPCF7_ContactForm $form, $result ) {
