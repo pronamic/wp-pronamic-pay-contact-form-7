@@ -36,7 +36,13 @@ class Pronamic {
 	 * @return Gateway|null
 	 */
 	public static function get_default_gateway() {
-		$config_id = \get_option( 'pronamic_pay_config_id' );
+		$value = \get_option( 'pronamic_pay_config_id' );
+
+		if ( ! \is_numeric( $value ) ) {
+			return null;
+		}
+
+		$config_id = (int) $value;
 
 		$gateway = Plugin::get_gateway( $config_id );
 
