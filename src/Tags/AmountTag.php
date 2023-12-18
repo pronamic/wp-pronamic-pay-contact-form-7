@@ -62,6 +62,9 @@ class AmountTag {
 
 		$value = (string) reset( $tag->values );
 
+		$default_value = $tag->get_default_option( $value );
+		$default_value = \is_array( $default_value ) ? \implode( ', ', $default_value ) : $default_value;
+
 		$attributes = [
 			'class'    => $tag->get_class_option( $class ),
 			'id'       => $tag->get_id_option(),
@@ -69,7 +72,7 @@ class AmountTag {
 			'size'     => $tag->get_size_option( '8' ),
 			'tabindex' => $tag->get_option( 'tabindex', 'signed_int', true ),
 			'type'     => 'text',
-			'value'    => \wpcf7_get_hangover( $tag->name, $tag->get_default_option( $value ) ),
+			'value'    => \wpcf7_get_hangover( $tag->name, $default_value ),
 		];
 
 		if ( $tag->has_option( 'readonly' ) ) {
