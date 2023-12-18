@@ -1,7 +1,16 @@
 {
 	"name": "wp-pay-extensions/contact-form-7",
 	"description": "Contact Form 7 driver for the WordPress payment processing library.",
-	"keywords": ["wordpress", "wp", "pay", "payments", "contact-form-7", "gateway", "extension", "pronamic"],
+	"keywords": [
+		"wordpress",
+		"wp",
+		"pay",
+		"payments",
+		"contact-form-7",
+		"gateway",
+		"extension",
+		"pronamic"
+	],
 	"homepage": "http://www.wp-pay.org/extensions/contact-form-7/",
 	"license": "GPL-3.0-or-later",
 	"type": "wordpress-plugin",
@@ -39,7 +48,7 @@
 		},
 		"wp-slug": "pronamic-pay-contact-form-7"
 	},
-	"repositories":[
+	"repositories": [
 		{
 			"type": "composer",
 			"url": "https://wpackagist.org",
