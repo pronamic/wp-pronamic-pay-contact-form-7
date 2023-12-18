@@ -8,19 +8,6 @@ module.exports = function( grunt ) {
 		// Package
 		pkg: grunt.file.readJSON( 'package.json' ),
 
-		// PHP Mess Detector
-		phpmd: {
-			application: {
-				dir: 'src'
-			},
-			options: {
-				bin: 'vendor/bin/phpmd',
-				exclude: 'node_modules',
-				reportFormat: 'xml',
-				rulesets: 'phpmd.ruleset.xml'
-			}
-		},
-
 		// JSHint
 		jshint: {
 			options: grunt.file.readJSON( '.jshintrc' ),
@@ -45,6 +32,6 @@ module.exports = function( grunt ) {
 	} );
 
 	// Default task(s).
-	grunt.registerTask( 'default', [ 'jshint', 'phpmd' ] );
+	grunt.registerTask( 'default', [ 'jshint' ] );
 	grunt.registerTask( 'assets', [ 'jshint', 'uglify' ] );
 };
