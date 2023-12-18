@@ -137,8 +137,9 @@ class AmountTag {
 	/**
 	 * Contact Form 7 messages.
 	 *
-	 * @param array[] $messages Messages.
-	 * @return array[]
+	 * @link https://github.com/rocklobster-in/contact-form-7/blob/v5.8.4/includes/contact-form-template.php#L219
+	 * @param array<string, array{'description': string, 'default': string}> $messages Messages.
+	 * @return array<string, array{'description': string, 'default': string}>
 	 */
 	public function messages( $messages ) {
 		return \array_merge(
