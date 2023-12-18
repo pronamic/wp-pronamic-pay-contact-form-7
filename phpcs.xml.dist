@@ -5,6 +5,7 @@
 
 	<exclude-pattern>tests/bootstrap.php</exclude-pattern>
 	<exclude-pattern>tests/wp-config.php</exclude-pattern>
+	<exclude-pattern>js/dist/*.asset.php</exclude-pattern>
 
 	<rule ref="PronamicWP">
 		<exclude name="WordPress.Security.SafeRedirect.wp_redirect_wp_redirect" />
