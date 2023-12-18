@@ -56,8 +56,6 @@ class Pronamic {
 	 * @return Payment|null
 	 */
 	public static function get_submission_payment( WPCF7_Submission $submission ) {
-		$form = $submission->get_contact_form();
-
 		// Gateway.
 		$gateway = self::get_default_gateway();
 
