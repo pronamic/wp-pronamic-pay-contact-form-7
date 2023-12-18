@@ -32,21 +32,12 @@
 		"url": "https://github.com/wp-pay-extensions/contact-form-7/issues"
 	},
 	"scripts": {
-		"babel": "babel ./js/src -d ./js/dist --source-maps",
 		"build": "wp-scripts build js/src/payment-form-processor.js --output-path=js/dist",
-		"eslint": "eslint . --ext .json --ext .js",
 		"lint:js:src": "wp-scripts lint-js ./js/src"
 	},
 	"homepage": "http://www.wp-pay.org/extensions/contact-form-7/",
 	"devDependencies": {
-		"@babel/cli": "^7.8.4",
-		"@babel/core": "^7.9.6",
-		"@babel/preset-env": "^7.9.6",
 		"@wordpress/env": "^5.2.0",
-		"@wordpress/scripts": "^26.19.0",
-		"babel-loader": "^8.1.0",
-		"babel-plugin-inline-json-import": "^0.3.2",
-		"eslint": "^7.0.0",
-		"eslint-plugin-json": "^2.1.1"
+		"@wordpress/scripts": "^26.19.0"
 	}
 }
