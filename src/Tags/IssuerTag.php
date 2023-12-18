@@ -90,7 +90,7 @@ class IssuerTag {
 		// Payment method options.
 		$issuer_field = $gateway->first_payment_method_field( PaymentMethods::IDEAL, IDealIssuerSelectField::class );
 
-		if ( null === $issuer_field ) {
+		if ( ! $issuer_field instanceof IDealIssuerSelectField ) {
 			return '';
 		}
 
