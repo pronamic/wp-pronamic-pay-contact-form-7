@@ -46,6 +46,10 @@
 			"roots/wordpress-core-installer": true,
 			"bamarni/composer-bin-plugin": true
 		},
+		"platform": {
+			"php": "8.0"
+		},
+		"platform-check": false,
 		"wp-slug": "pronamic-pay-contact-form-7"
 	},
 	"repositories": [
@@ -58,7 +62,7 @@
 		}
 	],
 	"require": {
-		"php": ">=7.4",
+		"php": ">=8.0",
 		"ext-json": "*",
 		"wp-pay/core": "^4.6"
 	},
