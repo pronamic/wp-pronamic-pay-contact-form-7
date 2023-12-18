@@ -1,12 +1,1 @@
-"use strict";
-
-document.addEventListener('wpcf7submit', function (event) {
-  var detail = event.detail;
-
-  if ('pronamic_pay_redirect' !== detail.status) {
-    return;
-  }
-
-  window.location.href = detail.apiResponse.pronamic_pay_redirect_url;
-});
-//# sourceMappingURL=payment-form-processor.js.map
+document.addEventListener("wpcf7submit",(function(e){var i=e.detail;"pronamic_pay_redirect"===i.status&&(window.location.href=i.apiResponse.pronamic_pay_redirect_url)}));

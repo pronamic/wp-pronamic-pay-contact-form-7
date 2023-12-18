@@ -33,7 +33,9 @@
 	},
 	"scripts": {
 		"babel": "babel ./js/src -d ./js/dist --source-maps",
-		"eslint": "eslint . --ext .json --ext .js"
+		"build": "wp-scripts build js/src/payment-form-processor.js --output-path=js/dist",
+		"eslint": "eslint . --ext .json --ext .js",
+		"lint:js:src": "wp-scripts lint-js ./js/src"
 	},
 	"homepage": "http://www.wp-pay.org/extensions/contact-form-7/",
 	"devDependencies": {
