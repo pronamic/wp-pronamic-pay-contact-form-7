@@ -6,6 +6,7 @@
 /.github/          export-ignore
 /.gitignore        export-ignore
 /.jshintrc         export-ignore
+/.phplint.yml      export-ignore
 /.sass-lint.yml    export-ignore
 /.wp-env.json      export-ignore
 /Gruntfile.js      export-ignore
