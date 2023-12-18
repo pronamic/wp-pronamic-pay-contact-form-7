@@ -2,6 +2,8 @@ includes:
 	- vendor-bin/phpstan/vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
 	customRulesetUsed: false
+	dynamicConstantNames:
+		- WPCF7_USE_PIPE
 	level: max
 	bootstrapFiles:
 		- tests/phpstan/bootstrap.php
