@@ -183,7 +183,6 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function submit( WPCF7_ContactForm $form, $result ) {
-		// Redirect.
 		if ( \array_key_exists( 'pronamic_pay_redirect_url', $result ) ) {
 			\wp_redirect( $result['pronamic_pay_redirect_url'] );
 
