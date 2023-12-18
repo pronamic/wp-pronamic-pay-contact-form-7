@@ -77,7 +77,7 @@
 		"wp-cli/wp-cli-bundle": "^2.6",
 		"wp-phpunit/wp-phpunit": "^6.1",
 		"wpackagist-plugin/contact-form-7": "^5.4",
-		"yoast/phpunit-polyfills": "^1.0"
+		"yoast/phpunit-polyfills": "^2.0"
 	},
 	"scripts": {
 		"coveralls": "vendor/bin/php-coveralls -v",
