@@ -37,7 +37,7 @@
 	},
 	"homepage": "http://www.wp-pay.org/extensions/contact-form-7/",
 	"devDependencies": {
-		"@wordpress/env": "^5.2.0",
+		"@wordpress/env": "^9.0.0",
 		"@wordpress/scripts": "^26.19.0"
 	}
 }
