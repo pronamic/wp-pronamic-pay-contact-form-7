@@ -213,7 +213,10 @@ class PaymentMethodTag {
 	 * @param array<string, mixed> $args Arguments.
 	 * @return void
 	 */
-	public function tag_generator( $form, $args ) {
+	public function tag_generator( // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Parameter is used in include.
+		$form,
+		$args 
+	) {
 		require __DIR__ . '/../../views/payment-method-tag-generator.php';
 	}
 }
