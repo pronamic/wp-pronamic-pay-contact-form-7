@@ -52,6 +52,9 @@ class Pronamic {
 	/**
 	 * Get Pronamic payment from Contact Form 7 form.
 	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @param WPCF7_Submission $submission Contact Form 7 form submission.
 	 * @return Payment|null
 	 */

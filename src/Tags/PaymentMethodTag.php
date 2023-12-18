@@ -47,6 +47,8 @@ class PaymentMethodTag {
 	/**
 	 * Form tag handler.
 	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @param WPCF7_FormTag $tag Form tag.
 	 * @return string
 	 */

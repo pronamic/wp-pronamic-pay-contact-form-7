@@ -7,8 +7,7 @@
 	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd"
 >
 	<rule ref="rulesets/cleancode.xml">
-		<exclude name="ElseExpression" />
-		<exclude name="StaticAccess" />		
+		<exclude name="StaticAccess" />
 	</rule>
 
 	<rule ref="rulesets/codesize.xml" />
