@@ -103,7 +103,16 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function before_send_mail( WPCF7_ContactForm $form, &$abort, WPCF7_Submission $submission ) {
-		$gateway = Pronamic::get_default_gateway();
+		// Get gateway.
+		$value = \get_option( 'pronamic_pay_config_id' );
+
+		if ( ! \is_numeric( $value ) ) {
+			return;
+		}
+
+		$config_id = (int) $value;
+
+		$gateway = Plugin::get_gateway( $config_id );
 
 		if ( ! $gateway ) {
 			return;
