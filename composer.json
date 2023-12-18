@@ -80,6 +80,7 @@
 		"yoast/phpunit-polyfills": "^2.0"
 	},
 	"scripts": {
+		"build": "vendor/bin/pronamic wp-build",
 		"coveralls": "vendor/bin/php-coveralls -v",
 		"phpcbf": "XDEBUG_MODE=off vendor/bin/phpcbf",
 		"phpcs": "XDEBUG_MODE=off vendor/bin/phpcs -s -v",
@@ -95,6 +96,11 @@
 			"@phpmd",
 			"@phplint",
 			"@phpstan"
+		],
+		"release": [
+			"@build",
+			"vendor/bin/pronamic release-to-github",
+			"vendor/bin/pronamic release-to-pronamic"
 		]
 	}
 }
