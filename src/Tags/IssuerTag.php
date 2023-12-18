@@ -109,23 +109,6 @@ class IssuerTag {
 	}
 
 	/**
-	 * Get value.
-	 *
-	 * @param string $name Field name.
-	 * @return string|null
-	 */
-	public static function get_value( $name ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		$value = array_key_exists( $name, $_POST ) ? \sanitize_text_field( \wp_unslash( $_POST[ $name ] ) ) : '';
-
-		if ( empty( $value ) ) {
-			return null;
-		}
-
-		return $value;
-	}
-
-	/**
 	 * Validate field input.
 	 *
 	 * @param WPCF7_Validation $result Validation result.
