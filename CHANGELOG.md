@@ -7,6 +7,20 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.4.0] - 2023-12-18
+
+### Changed
+
+- Added support for multiple `pronamic_pay_amount` tags. ([16](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/16))
+
+### Composer
+
+- Changed `php` from `>=7.4` to `>=8.0`.
+
+Full set of changes: [`3.3.2...3.4.0`][3.4.0]
+
+[3.4.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.3.2...v3.4.0
+
 ## [3.3.2] - 2023-10-30
 
 ### Commits
