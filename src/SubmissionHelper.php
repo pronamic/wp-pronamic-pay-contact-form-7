@@ -34,12 +34,12 @@ class SubmissionHelper {
 	}
 
 	/**
-	 * Get tags by filter.
+	 * Filter tags.
 	 * 
 	 * @param callable $callback Filter function.
 	 * @return WPCF7_FormTag[]
 	 */
-	private function get_tags_by_filter( $callback ) {
+	private function filter_tags( $callback ) {
 		return \array_filter(
 			$this->submission->get_contact_form()->scan_form_tags(),
 			$callback
@@ -49,14 +49,19 @@ class SubmissionHelper {
 	/**
 	 * Get tags by basetype or option.
 	 * 
-	 * @param string $basetype Basetype.
-	 * @param string $option   Option.
+	 * @param string $value Name or option.
 	 * @return WPCF7_FormTag[]
 	 */
-	public function get_tags_by_basetype_or_option( $basetype, $option ) {
-		return $this->get_tags_by_filter(
-			function ( $tag ) use ( $basetype, $option ) {
-				return ( $tag->basetype === $basetype ) || $tag->has_option( $option );
+	public function get_tags_with_basetype_or_name_or_option( $value ) {
+		return $this->filter_tags(
+			function ( $tag ) use ( $value ) {
+				return (
+					( $tag->name === $value )
+						||
+					( $tag->basetype === $value )
+						||
+					$tag->has_option( $value )
+				);
 			}
 		);
 	}
@@ -67,8 +72,8 @@ class SubmissionHelper {
 	 * @param string $basetype Basetype.
 	 * @return WPCF7_FormTag[]
 	 */
-	private function get_tags_by_basetype( $basetype ) {
-		return $this->get_tags_by_filter(
+	private function get_tags_with_basetype( $basetype ) {
+		return $this->filter_tags(
 			function ( $tag ) use ( $basetype ) {
 				return ( $tag->basetype === $basetype );
 			}
@@ -76,13 +81,27 @@ class SubmissionHelper {
 	}
 
 	/**
-	 * Get tags by options.
+	 * Get tags by name.
+	 * 
+	 * @param string $name Name.
+	 * @return WPCF7_FormTag[]
+	 */
+	private function get_tags_with_name( $name ) {
+		return $this->filter_tags(
+			function ( $tag ) use ( $name ) {
+				return ( $tag->name === $name );
+			}
+		);
+	}
+
+	/**
+	 * Get tags with option.
 	 * 
 	 * @param string $option Option.
 	 * @return WPCF7_FormTag[]
 	 */
-	private function get_tags_by_option( $option ) {
-		return $this->get_tags_by_filter(
+	private function get_tags_with_option( $option ) {
+		return $this->filter_tags(
 			function ( $tag ) use ( $option ) {
 				return $tag->has_option( $option );
 			}
@@ -170,46 +189,57 @@ class SubmissionHelper {
 	}
 
 	/**
-	 * Get value by tag option.
+	 * Get value by tag name or option.
 	 * 
-	 * @param string $option Option.
+	 * @param string $value Name or option value.
 	 * @return string
 	 */
-	public function get_value_by_tag_option( $option ) {
-		$tags = $this->get_tags_by_option( $option );
-
-		return $this->get_value_by_tags( $tags );
-	}
-
-	/**
-	 * Get value by tag basetype or option.
-	 * 
-	 * @param string $basetype Basetype.
-	 * @param string $option   Option.
-	 * @return string
-	 */
-	public function get_value_by_tag_basetype_or_option( $basetype, $option ) {
-		$tags = $this->get_tags_by_basetype( $basetype );
+	public function get_value_by_tag_name_or_option( $value ) {
+		$tags = $this->get_tags_with_name( $value );
 
 		if ( 0 === \count( $tags ) ) {
-			$tags = $this->get_tags_by_option( $option );
+			$tags = $this->get_tags_with_option( $value );
 		}
 
 		return $this->get_value_by_tags( $tags );
 	}
 
 	/**
-	 * Get value by tag option or basetype.
+	 * Get value by tag basetype, name or option.
 	 * 
-	 * @param string $option   Option.
+	 * @param string $value Value.
+	 * @return string
+	 */
+	public function get_value_by_tag_basetype_or_name_or_option( $value ) {
+		$tags = $this->get_tags_with_basetype( $value );
+
+		if ( 0 === \count( $tags ) ) {
+			$tags = $this->get_tags_with_name( $value );
+		}
+
+		if ( 0 === \count( $tags ) ) {
+			$tags = $this->get_tags_with_option( $value );
+		}
+
+		return $this->get_value_by_tags( $tags );
+	}
+
+	/**
+	 * Get value by tag name, option or basetype.
+	 * 
+	 * @param string $value    Name or option value.
 	 * @param string $basetype Basetype.
 	 * @return string
 	 */
-	public function get_value_by_tag_option_or_basetype( $option, $basetype ) {
-		$tags = $this->get_tags_by_option( $option );
+	public function get_value_by_tag_name_or_option_or_basetype( $value, $basetype ) {
+		$tags = $this->get_tags_with_name( $value );
 
 		if ( 0 === \count( $tags ) ) {
-			$tags = $this->get_tags_by_basetype( $basetype );
+			$tags = $this->get_tags_with_option( $value );
+		}
+
+		if ( 0 === \count( $tags ) ) {
+			$tags = $this->get_tags_with_basetype( $basetype );
 		}
 
 		return $this->get_value_by_tags( $tags );

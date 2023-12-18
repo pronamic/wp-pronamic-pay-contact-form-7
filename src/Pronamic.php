@@ -65,7 +65,7 @@ class Pronamic {
 		$total  = new Money();
 		$parser = new Parser();
 
-		$tags = $submission_helper->get_tags_by_basetype_or_option( 'pronamic_pay_amount', 'pronamic_pay_amount' );
+		$tags = $submission_helper->get_tags_with_basetype_or_name_or_option( 'pronamic_pay_amount' );
 
 		foreach ( $tags as $tag ) {
 			$value = $submission_helper->get_value_by_tag( $tag );
@@ -89,7 +89,7 @@ class Pronamic {
 		$payment->set_total_amount( $total );
 
 		// Check active payment method.
-		$payment_method = $submission_helper->get_value_by_tag_basetype_or_option( 'pronamic_pay_method', 'pronamic_pay_method' );
+		$payment_method = $submission_helper->get_value_by_tag_basetype_or_name_or_option( 'pronamic_pay_method' );
 
 		if ( ! empty( $payment_method ) ) {
 			if ( ! PaymentMethods::is_active( $payment_method ) ) {
@@ -116,7 +116,7 @@ class Pronamic {
 		);
 
 		// Description.
-		$description = $submission_helper->get_value_by_tag_option( 'pronamic_pay_description' );
+		$description = $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_description' );
 
 		if ( '' === $description ) {
 			$description = sprintf(
@@ -127,7 +127,7 @@ class Pronamic {
 		}
 
 		// Payment method.
-		$issuer = $submission_helper->get_value_by_tag_basetype_or_option( 'pronamic_pay_issuer', 'pronamic_pay_issuer' );
+		$issuer = $submission_helper->get_value_by_tag_basetype_or_name_or_option( 'pronamic_pay_issuer' );
 
 		$payment->title = $title;
 
@@ -138,12 +138,12 @@ class Pronamic {
 
 		// Contact.
 		$contact_name = new ContactName();
-		$contact_name->set_first_name( $submission_helper->get_value_by_tag_option( 'pronamic_pay_first_name' ) );
-		$contact_name->set_last_name( $submission_helper->get_value_by_tag_option( 'pronamic_pay_last_name' ) );
+		$contact_name->set_first_name( $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_first_name' ) );
+		$contact_name->set_last_name( $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_last_name' ) );
 
 		$customer = new Customer();
 		$customer->set_name( $contact_name );
-		$customer->set_email( $submission_helper->get_value_by_tag_option_or_basetype( 'pronamic_pay_email', 'email' ) );
+		$customer->set_email( $submission_helper->get_value_by_tag_name_or_option_or_basetype( 'pronamic_pay_email', 'email' ) );
 
 		$payment->set_customer( $customer );
 
@@ -169,9 +169,9 @@ class Pronamic {
 		];
 
 		foreach ( $address_fields as $field ) {
-			$billing_value  = $submission_helper->get_value_by_tag_option( 'pronamic_pay_billing_address_' . $field );
-			$shipping_value = $submission_helper->get_value_by_tag_option( 'pronamic_pay_shipping_address_' . $field );
-			$address_value  = $submission_helper->get_value_by_tag_option( 'pronamic_pay_address_' . $field );
+			$billing_value  = $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_billing_address_' . $field );
+			$shipping_value = $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_shipping_address_' . $field );
+			$address_value  = $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_address_' . $field );
 
 			if ( ! empty( $billing_value ) || ! empty( $address_value ) ) {
 				$callback = [ $billing_address, 'set_' . $field ];
