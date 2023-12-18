@@ -9,7 +9,5 @@
 
 	<rule ref="PronamicWP">
 		<exclude name="WordPress.Security.SafeRedirect.wp_redirect_wp_redirect" />
-
-		<exclude name="WordPressVIPMinimum.Security.PHPFilterFunctions.MissingThirdParameter" />
 	</rule>
 </ruleset>
