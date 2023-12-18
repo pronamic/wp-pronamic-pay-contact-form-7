@@ -15,7 +15,7 @@
  */
 add_filter(
 	'pre_wp_mail',
-	function( $short_circuit ) {
+	function ( $short_circuit ) {
 		return true;
 	} 
 );
