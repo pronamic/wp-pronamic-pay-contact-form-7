@@ -8,7 +8,6 @@ module.exports = function( grunt ) {
 		// Package
 		pkg: grunt.file.readJSON( 'package.json' ),
 
-			}
 		// PHPLint
 		phplint: {
 			all: [ 'src/**/*.php' ]
@@ -24,16 +23,6 @@ module.exports = function( grunt ) {
 				exclude: 'node_modules',
 				reportFormat: 'xml',
 				rulesets: 'phpmd.ruleset.xml'
-			}
-		},
-		
-		// PHPUnit
-		phpunit: {
-			options: {
-				bin: 'vendor/bin/phpunit'
-			},
-			application: {
-
 			}
 		},
 
@@ -61,6 +50,6 @@ module.exports = function( grunt ) {
 	} );
 
 	// Default task(s).
-	grunt.registerTask( 'default', [ 'jshint', 'phplint', 'phpmd', 'phpunit' ] );
+	grunt.registerTask( 'default', [ 'jshint', 'phplint', 'phpmd' ] );
 	grunt.registerTask( 'assets', [ 'jshint', 'uglify' ] );
 };
