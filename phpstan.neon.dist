@@ -5,8 +5,6 @@ parameters:
 	dynamicConstantNames:
 		- WPCF7_USE_PIPE
 	level: max
-	bootstrapFiles:
-		- tests/phpstan/bootstrap.php
 	paths:
 		- src/
 		- views/
