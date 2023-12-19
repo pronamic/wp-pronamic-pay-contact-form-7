@@ -136,13 +136,28 @@ class SubmissionHelper {
 	}
 
 	/**
-	 * Get value by tag.
+	 * Get values by tag.
 	 * 
 	 * @param WPCF7_FormTag $tag Tag.
-	 * @return string
+	 * @return array<string>
 	 */
-	public function get_value_by_tag( $tag ) {
-		$value = $this->submission->get_posted_string( $tag->name );
+	public function get_values_by_tag( $tag ) {
+		/**
+		 * Hidden fields.
+		 */
+		$hidden_fields = $this->get_hidden_fields();
+
+		if ( \in_array( $tag->name, $hidden_fields, true ) ) {
+			return [];
+		}
+
+		$data = $this->submission->get_posted_data( $tag->name );
+
+		if ( null === $data ) {
+			return [];
+		}
+
+		$data = \wpcf7_array_flatten( $data );
 
 		/**
 		 * Contact Form 7 concatenates the field option value with user input for free text fields. We
@@ -151,25 +166,32 @@ class SubmissionHelper {
 		 * @link https://github.com/rocklobster-in/contact-form-7/blob/2cfaa472fa485c6d3366fcdd80701fdaf7f9e425/includes/submission.php#L434-L437
 		 */
 		if ( \wpcf7_form_tag_supports( $tag->type, 'selectable-values' ) && $tag->has_option( 'free_text' ) ) {
-			$values = \WPCF7_USE_PIPE ? $tag->pipes->collect_afters() : $tag->values;
+			$tag_values = \WPCF7_USE_PIPE ? $tag->pipes->collect_afters() : $tag->values;
 
-			$last_value = \end( $values );
+			$tag_value_last = \end( $tag_values );
 
-			if ( \str_starts_with( $value, $last_value . ' ' ) ) {
-				$value = \substr( $value, \strlen( $last_value . ' ' ) );
+			$value = \array_pop( $data );
+
+			if ( \str_starts_with( $value, $tag_value_last . ' ' ) ) {
+				$value = \substr( $value, \strlen( $tag_value_last . ' ' ) );
 			}
+
+			$data[] = $value;
 		}
 
-		/**
-		 * Hidden fields.
-		 */
-		$hidden_fields = $this->get_hidden_fields();
+		return $data;
+	}
 
-		if ( \in_array( $tag->name, $hidden_fields, true ) ) {
-			$value = '';
-		}
+	/**
+	 * Get value by tag.
+	 * 
+	 * @param WPCF7_FormTag $tag Tag.
+	 * @return string
+	 */
+	public function get_value_by_tag( $tag ) {
+		$values = $this->get_values_by_tag( $tag );
 
-		return $value;
+		return \implode( ', ', $values );
 	}
 
 	/**
