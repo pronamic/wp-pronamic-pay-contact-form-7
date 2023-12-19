@@ -11,7 +11,7 @@
  * Author: Pronamic
  * Author URI: https://www.pronamic.eu/
  *
- * Text Domain: pronamic-pay-cf7
+ * Text Domain: pronamic-pay-contact-form-7
  * Domain Path: /languages/
  *
  * License: GPL-3.0-or-later
