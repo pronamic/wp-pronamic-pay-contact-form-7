@@ -74,14 +74,16 @@ class Pronamic {
 		$tags = $submission_helper->get_tags_with_basetype_or_name_or_option( 'pronamic_pay_amount' );
 
 		foreach ( $tags as $tag ) {
-			$value = $submission_helper->get_value_by_tag( $tag );
+			$values = $submission_helper->get_values_by_tag( $tag );
 
-			try {
-				$amount = $parser->parse( $value );
+			foreach ( $values as $value ) {
+				try {
+					$amount = $parser->parse( $value );
 
-				$total = $total->add( $amount );
-			} catch ( \Exception $e ) {
-				continue;
+					$total = $total->add( $amount );
+				} catch ( \Exception $e ) {
+					continue;
+				}
 			}
 		}
 
