@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.5.0] - 2024-02-07
+
+### Changed
+
+- Improved the support for Contact Form 7 checkbox fields used for the amount to be paid (`pronamic_pay_amount` tag option), multiple checked options/amounts are now added up. ([ba1322a](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/ba1322afb5d859f21281827a263dc94ed0dae350))
+
+Full set of changes: [`3.4.0...3.5.0`][3.5.0]
+
+[3.5.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.4.0...v3.5.0
+
 ## [3.4.0] - 2023-12-18
 
 ### Changed
