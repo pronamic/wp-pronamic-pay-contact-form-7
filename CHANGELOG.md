@@ -7,6 +7,22 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.5.1] - 2024-03-26
+
+### Commits
+
+- Fixed "error  'detail' is never reassigned. Use 'const' instead". ([94f9a98](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/94f9a9838b3c251cc078f48863f66d7dd36e0f74))
+- Added `.pronamic-build-ignore`. ([b042aa9](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/b042aa9c96cc5a92f062c517c526e4e89991becd))
+
+### Composer
+
+- Changed `wp-pay/core` from `^4.6` to `v4.16.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.16.0
+
+Full set of changes: [`3.5.0...3.5.1`][3.5.1]
+
+[3.5.1]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.5.0...v3.5.1
+
 ## [3.5.0] - 2024-02-07
 
 ### Changed
