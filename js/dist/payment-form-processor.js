@@ -1,1 +1,1 @@
-document.addEventListener("wpcf7submit",(function(e){var i=e.detail;"pronamic_pay_redirect"===i.status&&(window.location.href=i.apiResponse.pronamic_pay_redirect_url)}));
+document.addEventListener("wpcf7submit",(e=>{const t=e.detail;"pronamic_pay_redirect"===t.status&&(window.location.href=t.apiResponse.pronamic_pay_redirect_url)}));
