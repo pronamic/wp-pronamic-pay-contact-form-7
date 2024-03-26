@@ -1,5 +1,5 @@
 document.addEventListener( 'wpcf7submit', ( event ) => {
-	let detail = event.detail;
+	const detail = event.detail;
 
 	if ( 'pronamic_pay_redirect' !== detail.status ) {
 		return;
