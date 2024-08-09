@@ -3,7 +3,7 @@
  * Submission helper
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2023 Pronamic
+ * @copyright 2005-2024 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\ContactForm7
  */
@@ -19,14 +19,14 @@ use WPCF7_Submission;
 class SubmissionHelper {
 	/**
 	 * Submission.
-	 * 
+	 *
 	 * @var WPCF7_Submission
 	 */
 	private $submission;
 
 	/**
 	 * Construct submission helper object.
-	 * 
+	 *
 	 * @param WPCF7_Submission $submission Submission.
 	 */
 	public function __construct( $submission ) {
@@ -35,7 +35,7 @@ class SubmissionHelper {
 
 	/**
 	 * Filter tags.
-	 * 
+	 *
 	 * @param callable $callback Filter function.
 	 * @return WPCF7_FormTag[]
 	 */
@@ -48,7 +48,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get tags by basetype or option.
-	 * 
+	 *
 	 * @param string $value Name or option.
 	 * @return WPCF7_FormTag[]
 	 */
@@ -68,7 +68,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get tags by basetype.
-	 * 
+	 *
 	 * @param string $basetype Basetype.
 	 * @return WPCF7_FormTag[]
 	 */
@@ -82,7 +82,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get tags by name.
-	 * 
+	 *
 	 * @param string $name Name.
 	 * @return WPCF7_FormTag[]
 	 */
@@ -96,7 +96,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get tags with option.
-	 * 
+	 *
 	 * @param string $option Option.
 	 * @return WPCF7_FormTag[]
 	 */
@@ -112,7 +112,7 @@ class SubmissionHelper {
 	 * Get hidden fields.
 	 *
 	 * Hidden fields may arise when using the "Conditional Fields for Contact Form 7" plugin.
-	 * 
+	 *
 	 * @link https://wordpress.org/plugins/cf7-conditional-fields/
 	 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/83122efa3755f1d4b667aed3e3e7c2ae0f813faa
 	 * @return string[]
@@ -137,7 +137,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get values by tag.
-	 * 
+	 *
 	 * @param WPCF7_FormTag $tag Tag.
 	 * @return array<string>
 	 */
@@ -184,7 +184,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get value by tag.
-	 * 
+	 *
 	 * @param WPCF7_FormTag $tag Tag.
 	 * @return string
 	 */
@@ -196,7 +196,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get value by tags.
-	 * 
+	 *
 	 * @param WPCF7_FormTag[] $tags Tags.
 	 * @return string
 	 */
@@ -212,7 +212,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get value by tag name or option.
-	 * 
+	 *
 	 * @param string $value Name or option value.
 	 * @return string
 	 */
@@ -228,7 +228,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get value by tag basetype, name or option.
-	 * 
+	 *
 	 * @param string $value Value.
 	 * @return string
 	 */
@@ -248,7 +248,7 @@ class SubmissionHelper {
 
 	/**
 	 * Get value by tag name, option or basetype.
-	 * 
+	 *
 	 * @param string $value    Name or option value.
 	 * @param string $basetype Basetype.
 	 * @return string

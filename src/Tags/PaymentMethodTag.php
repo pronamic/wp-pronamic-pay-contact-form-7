@@ -3,7 +3,7 @@
  * Payment method form tag.
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2023 Pronamic
+ * @copyright 2005-2024 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay
  */
@@ -202,7 +202,7 @@ class PaymentMethodTag {
 	 */
 	public function tag_generator( // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Parameter is used in include.
 		$form,
-		$args 
+		$args
 	) {
 		require __DIR__ . '/../../views/payment-method-tag-generator.php';
 	}
