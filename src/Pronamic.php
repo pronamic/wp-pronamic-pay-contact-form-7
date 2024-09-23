@@ -71,6 +71,12 @@ class Pronamic {
 		$total  = new Money();
 		$parser = new Parser();
 
+		$currency = $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_currency' );
+
+		if ( '' !== $currency ) {
+			$total = new Money( 0, \strtoupper( $currency ) );
+		}
+
 		$tags = $submission_helper->get_tags_with_basetype_or_name_or_option( 'pronamic_pay_amount' );
 
 		foreach ( $tags as $tag ) {
