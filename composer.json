@@ -48,7 +48,7 @@
 			"automattic/jetpack-autoloader": true
 		},
 		"platform": {
-			"php": "8.0"
+			"php": "8.1"
 		},
 		"platform-check": false,
 		"wp-slug": "pronamic-pay-contact-form-7"
@@ -63,9 +63,9 @@
 		}
 	],
 	"require": {
-		"php": ">=8.0",
+		"php": ">=8.1",
 		"ext-json": "*",
-		"wp-pay/core": "^4.16"
+		"wp-pay/core": "^4.22"
 	},
 	"require-dev": {
 		"bamarni/composer-bin-plugin": "^1.8",
