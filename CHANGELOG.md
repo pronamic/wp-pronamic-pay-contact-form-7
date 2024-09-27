@@ -7,6 +7,26 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.6.0] - 2024-09-27
+
+### Added
+
+- Added support for setting currency with `pronamic_pay_currency` field name or option. ([#20](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/20))
+
+### Changed
+
+- Require PHP 8.1. ([2ad32ff](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/2ad32ff5cfc11cbe529a540f1dc2ef58eacd37fb))
+
+### Composer
+
+- Changed `php` from `>=8.0` to `>=8.1`.
+- Changed `wp-pay/core` from `^4.16` to `v4.22.1`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.22.1
+
+Full set of changes: [`3.5.1...3.6.0`][3.6.0]
+
+[3.6.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.5.1...v3.6.0
+
 ## [3.5.1] - 2024-03-26
 
 ### Commits
