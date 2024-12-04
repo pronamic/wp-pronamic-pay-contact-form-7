@@ -182,7 +182,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @param string[] $statuses Statuses.
 	 * @return string[]
 	 */
-	function flamingo_submission_statuses( array $statuses ) : array {
+	public function flamingo_submission_statuses( array $statuses ): array {
 		$statuses[] = 'pronamic_pay_redirect';
 
 		return $statuses;
