@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.7.0] - 2024-12-17
+
+### Commits
+
+- Store submissions with Flamingo when redirected for payment. ([6cbdb96](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/6cbdb962f6f7946383e9b07829ff64d0fe685fa9))
+
+Full set of changes: [`3.6.0...3.7.0`][3.7.0]
+
+[3.7.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.6.0...v3.7.0
+
 ## [3.6.0] - 2024-09-27
 
 ### Added

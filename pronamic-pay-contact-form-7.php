@@ -4,7 +4,7 @@
  * Plugin URI: https://www.pronamic.eu/plugins/pronamic-pay-contact-form-7/
  * Description: Extend the Pronamic Pay plugin with Contact Form 7 support to receive payments through a variety of payment providers.
  *
- * Version: 3.6.0
+ * Version: 3.7.0
  * Requires at least: 4.7
  * Requires PHP: 7.4
  *
