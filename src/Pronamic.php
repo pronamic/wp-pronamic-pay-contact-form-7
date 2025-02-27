@@ -147,6 +147,15 @@ class Pronamic {
 		$payment->set_meta( 'issuer', $issuer );
 		$payment->set_source( 'contact-form-7' );
 
+		/**
+		 * Contact Form 7 form ID.
+		 * 
+		 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/9
+		 * @link https://github.com/rocklobster-in/contact-form-7/blob/2f278f2de975141a152e62dcf036a86533f38151/includes/submission.php#L244-L251
+		 * @link https://github.com/rocklobster-in/contact-form-7/blob/2f278f2de975141a152e62dcf036a86533f38151/includes/contact-form.php#L388-L395
+		 */
+		$payment->set_meta( 'contact_form_7_form_id', $submission->get_contact_form()->id() );
+
 		// Contact.
 		$contact_name = new ContactName();
 		$contact_name->set_first_name( $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_first_name' ) );
