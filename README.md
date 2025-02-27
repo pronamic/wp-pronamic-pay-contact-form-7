@@ -22,6 +22,12 @@ using the `pronamic_pay_currency` field name or as a field option:
 [select select-123 pronamic_pay_currency "EUR" "CHF"]
 ```
 
+## Additional Settings
+
+```
+pronamic_pay_success_redirect_url: https://www.example.com/payment-completed/
+```
+
 ## WordPress environment for building and testing
 
 ```
