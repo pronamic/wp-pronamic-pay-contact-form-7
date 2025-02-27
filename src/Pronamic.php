@@ -116,12 +116,12 @@ class Pronamic {
 		$unique_id = \time();
 
 		// Title.
-		$title = sprintf(
+		$title = \sprintf(
 			/* translators: %s: payment data title */
-			__( 'Payment for %s', 'pronamic_ideal' ),
-			sprintf(
+			\__( 'Payment for %s', 'pronamic_ideal' ),
+			\sprintf(
 				/* translators: %s: order id */
-				__( 'Contact Form 7 Entry @ %s', 'pronamic_ideal' ),
+				\__( 'Contact Form 7 Entry @ %s', 'pronamic_ideal' ),
 				$unique_id
 			)
 		);
@@ -130,9 +130,9 @@ class Pronamic {
 		$description = $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_description' );
 
 		if ( '' === $description ) {
-			$description = sprintf(
+			$description = \sprintf(
 				/* translators: %s: payment number */
-				__( 'Payment %s', 'pronamic_ideal' ),
+				\__( 'Payment %s', 'pronamic_ideal' ),
 				$unique_id
 			);
 		}
@@ -195,7 +195,7 @@ class Pronamic {
 				$callback = [ $billing_address, 'set_' . $field ];
 
 				if ( \is_callable( $callback ) ) {
-					call_user_func( $callback, empty( $billing_value ) ? $address_value : $billing_value );
+					\call_user_func( $callback, empty( $billing_value ) ? $address_value : $billing_value );
 				}
 			}
 
@@ -203,7 +203,7 @@ class Pronamic {
 				$callback = [ $shipping_address, 'set_' . $field ];
 
 				if ( \is_callable( $callback ) ) {
-					call_user_func( $callback, empty( $shipping_value ) ? $address_value : $shipping_value );
+					\call_user_func( $callback, empty( $shipping_value ) ? $address_value : $shipping_value );
 				}
 			}
 		}
