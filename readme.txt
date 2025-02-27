@@ -2,7 +2,7 @@
 Contributors: pronamic, remcotolsma
 Tags: pronamic, pay, contact-form-7, add-on
 Requires at least: 5.2
-Tested up to: 6.0
+Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 3.7.0
 
