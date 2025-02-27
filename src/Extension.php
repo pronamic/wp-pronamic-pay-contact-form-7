@@ -19,14 +19,7 @@ use WPCF7_MailTag;
 use WPCF7_Submission;
 
 /**
- * Title: WordPress pay extension Contact Form 7 extension
- * Description:
- * Copyright: 2005-2025 Pronamic
- * Company: Pronamic
- *
- * @author  Reüel van der Steege
- * @version 1.0.0
- * @since   1.0.0
+ * Extension class
  */
 class Extension extends AbstractPluginIntegration {
 	/**

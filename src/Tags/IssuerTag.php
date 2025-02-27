@@ -1,6 +1,6 @@
 <?php
 /**
- * Issuer form tag.
+ * Issuer tag
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2025 Pronamic
@@ -17,11 +17,7 @@ use WPCF7_FormTag;
 use WPCF7_Validation;
 
 /**
- * Issuer tag.
- *
- * @author  Reüel van der Steege
- * @since   1.0.0
- * @version 1.0.0
+ * Issuer tag class
  */
 class IssuerTag {
 	/**
@@ -36,11 +32,9 @@ class IssuerTag {
 		\wpcf7_add_form_tag( self::TAG, [ $this, 'handler' ], true );
 		\wpcf7_add_form_tag( self::TAG . '*', [ $this, 'handler' ], true );
 
-		// Filters.
 		\add_filter( 'wpcf7_validate_' . self::TAG, [ $this, 'validate' ], 10, 2 );
 		\add_filter( 'wpcf7_validate_' . self::TAG . '*', [ $this, 'validate' ], 10, 2 );
 
-		// Actions.
 		\add_action( 'wpcf7_admin_init', [ $this, 'add_tag_generator' ], 60 );
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Payment method form tag.
+ * Payment method tag
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2025 Pronamic
@@ -16,11 +16,7 @@ use WPCF7_FormTag;
 use WPCF7_Validation;
 
 /**
- * Payment method tag.
- *
- * @author  Reüel van der Steege
- * @since   1.0.0
- * @version 1.0.0
+ * Payment method tag class
  */
 class PaymentMethodTag {
 	/**
@@ -35,12 +31,10 @@ class PaymentMethodTag {
 		\wpcf7_add_form_tag( self::TAG, [ $this, 'handler' ], true );
 		\wpcf7_add_form_tag( self::TAG . '*', [ $this, 'handler' ], true );
 
-		// Filters.
 		\add_filter( 'wpcf7_validate_' . self::TAG, [ $this, 'validate' ], 10, 2 );
 		\add_filter( 'wpcf7_validate_' . self::TAG . '*', [ $this, 'validate' ], 10, 2 );
 		\add_filter( 'wpcf7_messages', [ $this, 'messages' ] );
 
-		// Actions.
 		\add_action( 'wpcf7_admin_init', [ $this, 'add_tag_generator' ], 60 );
 	}
 
@@ -57,7 +51,6 @@ class PaymentMethodTag {
 			return '';
 		}
 
-		// Get gateway.
 		$gateway = Pronamic::get_default_gateway();
 
 		if ( null === $gateway ) {

@@ -23,11 +23,7 @@ use WPCF7_FormTagsManager;
 use WPCF7_Submission;
 
 /**
- * Pronamic
- *
- * @author  Reüel van der Steege
- * @version 1.0.0
- * @since   1.0.0
+ * Pronamic class
  */
 class Pronamic {
 	/**
