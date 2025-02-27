@@ -309,9 +309,9 @@ final class Extension extends AbstractPluginIntegration {
 			return $url;
 		}
 
-		$pref_url = $contact_form->pref( 'pronamic_pay_success_redirect_url' );
+		$pref_url = (string) $contact_form->pref( 'pronamic_pay_success_redirect_url' );
 
-		if ( null === $pref_url ) {
+		if ( '' === $pref_url ) {
 			return $url;
 		}
 
