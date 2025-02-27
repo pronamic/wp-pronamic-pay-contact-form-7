@@ -18,7 +18,7 @@ use WPCF7_Validation;
 /**
  * Amount tag class
  */
-class AmountTag {
+final class AmountTag {
 	/**
 	 * Form tag.
 	 */
