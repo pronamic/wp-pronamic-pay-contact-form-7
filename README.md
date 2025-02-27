@@ -1,6 +1,16 @@
-# WordPress Pay Extension: Contact Form 7
+<h1 align="center">Pronamic Pay integration for Contact Form 7</h1>
 
-**Contact Form 7 driver for the WordPress payment processing library.**
+<p align="center">
+	Pronamic Pay integration for Contact Form 7 – extend your WordPress forms with seamless payment processing using the powerful Pronamic Pay platform.
+</p>
+
+## Table of Contents
+
+- [Amount Field](#amount-field)
+- [Currency](#currency)
+- [Additional Settings](#additional-settings)
+- [WordPress environment for testing](#wordpress-environment-for-testing)
+- [Links](#links)
 
 ## Amount Field
 
@@ -30,7 +40,7 @@ It is possible to specify per Contact Form 7 form to which URL a visitor should 
 pronamic_pay_success_redirect_url: https://www.example.com/payment-completed/
 ```
 
-## WordPress environment for building and testing
+## WordPress environment for testing
 
 ```
 npx wp-env start
