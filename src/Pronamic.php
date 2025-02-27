@@ -155,6 +155,7 @@ class Pronamic {
 		 * @link https://github.com/rocklobster-in/contact-form-7/blob/2f278f2de975141a152e62dcf036a86533f38151/includes/contact-form.php#L388-L395
 		 */
 		$payment->set_meta( 'contact_form_7_form_id', $submission->get_contact_form()->id() );
+		$payment->set_meta( 'contact_form_7_form_hash', $submission->get_contact_form()->hash() );
 
 		// Contact.
 		$contact_name = new ContactName();
