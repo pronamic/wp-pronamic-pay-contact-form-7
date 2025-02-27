@@ -18,7 +18,7 @@ use WPCF7_Validation;
 /**
  * Payment method tag class
  */
-class PaymentMethodTag {
+final class PaymentMethodTag {
 	/**
 	 * Form tag.
 	 */

@@ -25,7 +25,7 @@ use WPCF7_Submission;
 /**
  * Pronamic class
  */
-class Pronamic {
+final class Pronamic {
 	/**
 	 * Get default gateway.
 	 *

@@ -19,7 +19,7 @@ use WPCF7_Validation;
 /**
  * Issuer tag class
  */
-class IssuerTag {
+final class IssuerTag {
 	/**
 	 * Form tag.
 	 */

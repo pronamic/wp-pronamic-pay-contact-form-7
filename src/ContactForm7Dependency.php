@@ -15,7 +15,7 @@ use Pronamic\WordPress\Pay\Dependencies\Dependency;
 /**
  * Contact Form 7 dependency class
  */
-class ContactForm7Dependency extends Dependency {
+final class ContactForm7Dependency extends Dependency {
 	/**
 	 * Is met.
 	 *

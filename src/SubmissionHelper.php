@@ -16,7 +16,7 @@ use WPCF7_Submission;
 /**
  * Submission helper class
  */
-class SubmissionHelper {
+final class SubmissionHelper {
 	/**
 	 * Submission.
 	 *

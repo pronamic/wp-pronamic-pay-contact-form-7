@@ -22,7 +22,7 @@ use WPCF7_Submission;
 /**
  * Extension class
  */
-class Extension extends AbstractPluginIntegration {
+final class Extension extends AbstractPluginIntegration {
 	/**
 	 * Slug
 	 *
