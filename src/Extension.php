@@ -80,9 +80,9 @@ class Extension extends AbstractPluginIntegration {
 		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 		\add_filter( 'wpcf7_flamingo_submit_if', [ $this, 'flamingo_submission_statuses' ] );
 
-		new Tags\AmountTag();
-		new Tags\IssuerTag();
-		new Tags\PaymentMethodTag();
+		new AmountTag();
+		new IssuerTag();
+		new PaymentMethodTag();
 	}
 
 	/**
@@ -94,7 +94,6 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function before_send_mail( WPCF7_ContactForm $form, &$abort, WPCF7_Submission $submission ) {
-		// Get gateway.
 		$value = \get_option( 'pronamic_pay_config_id' );
 
 		if ( ! \is_numeric( $value ) ) {
@@ -110,7 +109,6 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		try {
-			// Start payment.
 			$payment = Pronamic::get_submission_payment( $submission );
 
 			// Return on invalid payment.

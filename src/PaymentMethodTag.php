@@ -1,6 +1,6 @@
 <?php
 /**
- * Issuer tag
+ * Payment method tag
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2025 Pronamic
@@ -8,25 +8,24 @@
  * @package   Pronamic\WordPress\Pay
  */
 
-namespace Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags;
+namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
-use Pronamic\WordPress\Pay\Fields\IDealIssuerSelectField;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
 use WPCF7_FormTag;
 use WPCF7_Validation;
 
 /**
- * Issuer tag class
+ * Payment method tag class
  */
-class IssuerTag {
+class PaymentMethodTag {
 	/**
 	 * Form tag.
 	 */
-	const TAG = 'pronamic_pay_issuer';
+	const TAG = 'pronamic_pay_method';
 
 	/**
-	 * Issuer tag constructor.
+	 * Payment method tag constructor.
 	 */
 	public function __construct() {
 		\wpcf7_add_form_tag( self::TAG, [ $this, 'handler' ], true );
@@ -34,6 +33,7 @@ class IssuerTag {
 
 		\add_filter( 'wpcf7_validate_' . self::TAG, [ $this, 'validate' ], 10, 2 );
 		\add_filter( 'wpcf7_validate_' . self::TAG . '*', [ $this, 'validate' ], 10, 2 );
+		\add_filter( 'wpcf7_messages', [ $this, 'messages' ] );
 
 		\add_action( 'wpcf7_admin_init', [ $this, 'add_tag_generator' ], 60 );
 	}
@@ -41,6 +41,8 @@ class IssuerTag {
 	/**
 	 * Form tag handler.
 	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @param WPCF7_FormTag $tag Form tag.
 	 * @return string
 	 */
@@ -49,7 +51,6 @@ class IssuerTag {
 			return '';
 		}
 
-		// Get gateway.
 		$gateway = Pronamic::get_default_gateway();
 
 		if ( null === $gateway ) {
@@ -82,23 +83,50 @@ class IssuerTag {
 		}
 
 		// Payment method options.
-		$issuer_field = $gateway->first_payment_method_field( PaymentMethods::IDEAL, IDealIssuerSelectField::class );
+		$options = [];
 
-		if ( ! $issuer_field instanceof IDealIssuerSelectField ) {
-			return '';
+		/*
+		 * Search payment method values in tag pipes.
+		 *
+		 * @link https://contactform7.com/selectable-recipient-with-pipes/
+		 */
+		$pipes = [];
+
+		if ( $tag->pipes instanceof \WPCF7_Pipes ) {
+			$combined = \array_combine( $tag->pipes->collect_afters(), $tag->pipes->collect_befores() );
+
+			if ( false !== $combined ) {
+				$pipes = $combined;
+			}
 		}
 
-		$html_options = '';
+		$payment_methods = $gateway->get_payment_methods(
+			[
+				'status' => [ '', 'active' ],
+			]
+		);
 
-		foreach ( $issuer_field->get_options() as $option ) {
-			$html_options .= $option->get_element()->render();
+		foreach ( $payment_methods as $payment_method ) {
+			$value = $payment_method->get_id();
+			$label = $payment_method->get_name();
+
+			if ( ! empty( $tag->values ) && ! \array_key_exists( $value, $pipes ) ) {
+				continue;
+			}
+
+			$options[] = \sprintf(
+				'<option value="%1$s" %2$s>%3$s</option>',
+				\esc_attr( $value ),
+				\selected( $attributes['value'], $value, false ),
+				\esc_html( $label )
+			);
 		}
 
 		$html = \sprintf(
 			'<span class="wpcf7-form-control-wrap %1$s"><select %2$s>%3$s</select>%4$s</span>',
 			\sanitize_html_class( $tag->name ),
 			\wpcf7_format_atts( $attributes ),
-			$html_options,
+			\implode( '', $options ),
 			$error
 		);
 
@@ -129,6 +157,25 @@ class IssuerTag {
 	}
 
 	/**
+	 * Contact Form 7 messages.
+	 *
+	 * @link https://github.com/rocklobster-in/contact-form-7/blob/v5.8.4/includes/contact-form-template.php#L219
+	 * @param array<string, array{'description': string, 'default': string}> $messages Messages.
+	 * @return array<string, array{'description': string, 'default': string}>
+	 */
+	public function messages( $messages ) {
+		return \array_merge(
+			$messages,
+			[
+				'invalid_pronamic_pay_method_required' => [
+					'description' => __( 'Payment method required.', 'pronamic_ideal' ),
+					'default'     => __( 'The payment method is invalid.', 'pronamic_ideal' ),
+				],
+			]
+		);
+	}
+
+	/**
 	 * Add tag generator.
 	 *
 	 * @return void
@@ -136,7 +183,7 @@ class IssuerTag {
 	public function add_tag_generator() {
 		$tag_generator = \WPCF7_TagGenerator::get_instance();
 
-		$tag_generator->add( self::TAG, __( 'issuer', 'pronamic_ideal' ), [ $this, 'tag_generator' ] );
+		$tag_generator->add( self::TAG, \__( 'payment method', 'pronamic_ideal' ), [ $this, 'tag_generator' ] );
 	}
 
 	/**
@@ -150,6 +197,6 @@ class IssuerTag {
 		$form,
 		$args
 	) {
-		require __DIR__ . '/../../views/issuer-tag-generator.php';
+		require __DIR__ . '/../../views/payment-method-tag-generator.php';
 	}
 }
