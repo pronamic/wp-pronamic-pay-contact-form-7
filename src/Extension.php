@@ -12,6 +12,7 @@ namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
 use Pronamic\WordPress\Pay\AbstractPluginIntegration;
 use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
 use WPCF7_ContactForm;
@@ -59,6 +60,7 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, [ $this, 'source_text' ], 10, 2 );
+		\add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, [ $this, 'redirect_url' ], 10, 2 );
 
 		\add_action( 'wpcf7_init', [ $this, 'init' ] );
 	}
@@ -282,5 +284,39 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function source_description( $description, Payment $payment ) {
 		return \__( 'Contact Form 7 Entry', 'pronamic_ideal' );
+	}
+
+	/**
+	 * Payment redirect URL filter.
+	 *
+	 * @link https://github.com/rocklobster-in/contact-form-7/blob/2f278f2de975141a152e62dcf036a86533f38151/includes/contact-form.php#L1128-L1171
+	 * @param string  $url     Redirect URL.
+	 * @param Payment $payment Payment.
+	 * @return string
+	 */
+	public function redirect_url( $url, Payment $payment ) {
+		if ( PaymentStatus::SUCCESS !== $payment->get_status() ) {
+			return $url;
+		}
+
+		$form_id = $payment->get_meta( 'contact_form_7_form_id' );
+
+		if ( ! \is_int( $form_id ) ) {
+			return $url;
+		}
+
+		$contact_form = \wpcf7_contact_form( $form_id );
+
+		if ( null === $contact_form ) {
+			return $url;
+		}
+
+		$pref_url = $contact_form->pref( 'pronamic_pay_success_redirect_url' );
+
+		if ( null === $pref_url ) {
+			return $url;
+		}
+
+		return $pref_url;
 	}
 }
