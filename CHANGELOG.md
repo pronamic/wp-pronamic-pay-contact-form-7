@@ -7,6 +7,27 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.0.0] - 2025-02-27
+
+### 🚀 Improved
+
+- Marked several PHP classes as final to prevent unintended extensions.
+- Relocated form tag classes from `Pronamic\WordPress\Pay\Extensions\ContactForm7\Tags` to `Pronamic\WordPress\Pay\Extensions\ContactForm7` for better organization.
+- Refined code by removing unnecessary comments and documentation blocks.
+
+### 🆕 Added
+
+- Contact Form 7 form ID is now stored in meta.
+- Contact Form 7 form hash is now stored in meta.
+- Introduced support for the Contact Form 7 "Additional Setting" `pronamic_pay_success_redirect_url`, allowing users to configure a custom redirect URL after a successful payment.
+
+### 🔄 Updated
+
+- Updated copyright to 2025.
+- Verified compatibility with WordPress 6.7.
+
+[4.0.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v3.7.0...v4.0.0
+
 ## [3.7.0] - 2024-12-17
 
 ### Commits
