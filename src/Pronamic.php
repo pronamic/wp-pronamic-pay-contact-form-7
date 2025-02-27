@@ -158,9 +158,7 @@ class Pronamic {
 
 		$payment->set_customer( $customer );
 
-		/*
-		 * Address.
-		 */
+		// Address.
 		$address = new Address();
 
 		$address->set_name( $contact_name );
@@ -204,9 +202,6 @@ class Pronamic {
 		$payment->set_billing_address( $billing_address );
 		$payment->set_shipping_address( $shipping_address );
 
-		/*
-		 * Return.
-		 */
 		return $payment;
 	}
 }

@@ -40,7 +40,6 @@ class Extension extends AbstractPluginIntegration {
 			]
 		);
 
-		// Dependencies.
 		$dependencies = $this->get_dependencies();
 
 		$dependencies->add( new ContactForm7Dependency() );
@@ -61,7 +60,6 @@ class Extension extends AbstractPluginIntegration {
 
 		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, [ $this, 'source_text' ], 10, 2 );
 
-		// Actions.
 		\add_action( 'wpcf7_init', [ $this, 'init' ] );
 	}
 
@@ -71,18 +69,15 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function init() {
-		// Actions.
 		\add_action( 'wpcf7_before_send_mail', [ $this, 'before_send_mail' ], 10, 3 );
 		\add_action( 'wpcf7_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		\add_action( 'wpcf7_submit', [ $this, 'submit' ], 10, 2 );
 
-		// Filters.
 		\add_filter( 'wpcf7_collect_mail_tags', [ $this, 'collect_mail_tags' ] );
 		\add_filter( 'wpcf7_mail_tag_replaced', [ $this, 'replace_mail_tags' ], 10, 4 );
 		\add_filter( 'wpcf7_submission_result', [ $this, 'submission_result' ], 10, 2 );
 		\add_filter( 'wpcf7_flamingo_submit_if', [ $this, 'flamingo_submission_statuses' ] );
 
-		// Register tags.
 		new Tags\AmountTag();
 		new Tags\IssuerTag();
 		new Tags\PaymentMethodTag();
@@ -275,7 +270,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function source_text( $text, Payment $payment ) {
-		return __( 'Contact Form 7', 'pronamic_ideal' );
+		return \__( 'Contact Form 7', 'pronamic_ideal' );
 	}
 
 	/**
@@ -286,6 +281,6 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string
 	 */
 	public function source_description( $description, Payment $payment ) {
-		return __( 'Contact Form 7 Entry', 'pronamic_ideal' );
+		return \__( 'Contact Form 7 Entry', 'pronamic_ideal' );
 	}
 }

@@ -142,9 +142,6 @@ class SubmissionHelper {
 	 * @return array<string>
 	 */
 	public function get_values_by_tag( $tag ) {
-		/**
-		 * Hidden fields.
-		 */
 		$hidden_fields = $this->get_hidden_fields();
 
 		if ( \in_array( $tag->name, $hidden_fields, true ) ) {
