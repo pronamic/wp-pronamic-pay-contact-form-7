@@ -65,6 +65,7 @@
 	"require": {
 		"php": ">=8.1",
 		"ext-json": "*",
+		"automattic/jetpack-autoloader": "^3.1",
 		"wp-pay/core": "^4.25"
 	},
 	"require-dev": {
