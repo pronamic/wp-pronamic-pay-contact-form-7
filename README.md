@@ -24,6 +24,8 @@ using the `pronamic_pay_currency` field name or as a field option:
 
 ## Additional Settings
 
+It is possible to specify per Contact Form 7 form to which URL a visitor should be sent after a successful payment via the “Additional Settings”.
+
 ```
 pronamic_pay_success_redirect_url: https://www.example.com/payment-completed/
 ```
