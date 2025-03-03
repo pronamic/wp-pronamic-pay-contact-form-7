@@ -150,6 +150,6 @@ final class IssuerTag {
 		$form,
 		$args
 	) {
-		require __DIR__ . '/../../views/issuer-tag-generator.php';
+		require __DIR__ . '/../views/issuer-tag-generator.php';
 	}
 }

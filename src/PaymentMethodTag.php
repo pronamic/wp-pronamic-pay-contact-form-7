@@ -197,6 +197,6 @@ final class PaymentMethodTag {
 		$form,
 		$args
 	) {
-		require __DIR__ . '/../../views/payment-method-tag-generator.php';
+		require __DIR__ . '/../views/payment-method-tag-generator.php';
 	}
 }
