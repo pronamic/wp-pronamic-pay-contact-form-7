@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.0.1] - 2025-03-03
+
+### Fixed
+
+- Fixed fatal error due to incorrect file path (fix #24). ([3cb1fa8](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/3cb1fa8b6e7ec4321345e9c0f82d52a8a5758149))
+
+Full set of changes: [`4.0.0...4.0.1`][4.0.1]
+
+[4.0.1]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v4.0.0...v4.0.1
+
 ## [4.0.0] - 2025-02-27
 
 ### 🚀 Improved
