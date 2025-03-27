@@ -108,10 +108,15 @@ final class PaymentMethodTag {
 
 		foreach ( $payment_methods as $payment_method ) {
 			$value = $payment_method->get_id();
-			$label = $payment_method->get_name();
 
 			if ( ! empty( $tag->values ) && ! \array_key_exists( $value, $pipes ) ) {
 				continue;
+			}
+
+			$label = $payment_method->get_name();
+
+			if ( ! empty( $tag->values ) && \array_key_exists( $value, $pipes ) ) {
+				$label = $pipes[ $value ];
 			}
 
 			$options[] = \sprintf(
