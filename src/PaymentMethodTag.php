@@ -115,7 +115,7 @@ final class PaymentMethodTag {
 
 			$label = $payment_method->get_name();
 
-			if ( ! empty( $tag->values ) && \array_key_exists( $value, $pipes ) ) {
+			if ( \array_key_exists( $value, $pipes ) ) {
 				$label = $pipes[ $value ];
 			}
 
