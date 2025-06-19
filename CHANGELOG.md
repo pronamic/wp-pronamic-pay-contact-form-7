@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.1.0] - 2025-06-19
+
+### Changed
+
+- Use payment method option label if set. ([341c1ae](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/341c1aea16b6111dd5dfb71f96210f4002f24916))
+
+Full set of changes: [`4.0.1...4.1.0`][4.1.0]
+
+[4.1.0]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v4.0.1...v4.1.0
+
 ## [4.0.1] - 2025-03-03
 
 ### Fixed
