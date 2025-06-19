@@ -7,6 +7,21 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.1.1] - 2025-06-19
+
+### Commits
+
+- Allow Jetpack autoload 3, 4 and 5. ([be7ae53](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/be7ae5379571828ccd5cb36c2618fe0b6cb432a8))
+
+### Composer
+
+- Changed `automattic/jetpack-autoloader` from `^3.1` to `v5.0.7`.
+	Release notes: https://github.com/Automattic/jetpack-autoloader/releases/tag/v5.0.7
+
+Full set of changes: [`4.1.0...4.1.1`][4.1.1]
+
+[4.1.1]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v4.1.0...v4.1.1
+
 ## [4.1.0] - 2025-06-19
 
 ### Changed
