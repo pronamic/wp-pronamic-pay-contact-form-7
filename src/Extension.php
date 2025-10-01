@@ -36,7 +36,7 @@ final class Extension extends AbstractPluginIntegration {
 	public function __construct() {
 		parent::__construct(
 			[
-				'name'    => __( 'Contact Form 7', 'pronamic_ideal' ),
+				'name'    => 'Contact Form 7',
 				'version' => '1.0.0',
 			]
 		);
