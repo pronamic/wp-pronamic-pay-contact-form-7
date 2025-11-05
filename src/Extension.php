@@ -14,7 +14,6 @@ use Pronamic\WordPress\Pay\AbstractPluginIntegration;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use Pronamic\WordPress\Pay\Plugin;
-use Pronamic\WordPress\Pay\Subscriptions\Subscription;
 use WPCF7_ContactForm;
 use WPCF7_MailTag;
 use WPCF7_Submission;
