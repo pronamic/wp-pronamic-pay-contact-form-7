@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.1.2] - 2025-11-11
+
+### Commits
+
+- Removed unused import. ([008c440](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/008c44020cce70b37b0b1077278dfa6f69bd9d4e))
+- Added this point we shoud not use translation functions. ([efb6182](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/commit/efb61824a773bc6dd79fa79c234d32a96904c4c4))
+
+Full set of changes: [`4.1.1...4.1.2`][4.1.2]
+
+[4.1.2]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v4.1.1...v4.1.2
+
 ## [4.1.1] - 2025-06-19
 
 ### Commits
