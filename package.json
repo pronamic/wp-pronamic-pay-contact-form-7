@@ -33,8 +33,8 @@
 		"url": "https://github.com/wp-pay-extensions/contact-form-7/issues"
 	},
 	"devDependencies": {
-		"@wordpress/env": "^10.18.0",
-		"@wordpress/scripts": "^30.11.0"
+		"@wordpress/env": "^10.37.0",
+		"@wordpress/scripts": "^31.2.0"
 	},
 	"scripts": {
 		"build": "wp-scripts build js/src/payment-form-processor.js --output-path=js/dist",
