@@ -3,7 +3,7 @@
  * Pronamic
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2025 Pronamic
+ * @copyright 2005-2026 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -149,7 +149,7 @@ final class Pronamic {
 
 		/**
 		 * Contact Form 7 form ID.
-		 * 
+		 *
 		 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/9
 		 * @link https://github.com/rocklobster-in/contact-form-7/blob/2f278f2de975141a152e62dcf036a86533f38151/includes/submission.php#L244-L251
 		 * @link https://github.com/rocklobster-in/contact-form-7/blob/2f278f2de975141a152e62dcf036a86533f38151/includes/contact-form.php#L388-L395
