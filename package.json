@@ -34,7 +34,7 @@
 	},
 	"devDependencies": {
 		"@wordpress/env": "^11.0.0",
-		"@wordpress/scripts": "^31.2.0"
+		"@wordpress/scripts": "^31.5.0"
 	},
 	"scripts": {
 		"build": "wp-scripts build js/src/payment-form-processor.js --output-path=js/dist",
