@@ -7,6 +7,18 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.2.1] - 2026-07-31
+
+### Changed
+
+- Updated development tooling: bumped `@wordpress/scripts` to `^31.5.0` and `@wordpress/env` to `^11.0.0`.
+- Added `testsEnvironment` flag to `.wp-env.json`.
+- Ignored `.wp-env.override.json` in Git.
+
+Full set of changes: [`4.2.0...4.2.1`][4.2.1]
+
+[4.2.1]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v4.2.0...v4.2.1
+
 ## [4.2.0] - 2026-01-05
 
 ### Commits
