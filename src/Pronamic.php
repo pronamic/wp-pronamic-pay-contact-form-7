@@ -81,8 +81,11 @@ final class Pronamic {
 
 			foreach ( $values as $value ) {
 				try {
-					$amount = $parser->parse( $value );
-
+					$amount = new Money(
+						$parser->parse( $value )->get_value(),
+						$currency
+					);
+	
 					$total = $total->add( $amount );
 				} catch ( \Exception $e ) {
 					continue;
