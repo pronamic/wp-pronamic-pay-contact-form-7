@@ -1,5 +1,8 @@
 {
 	"core": null,
+	"config": {
+		"PRONAMIC_PAY_DEBUG": true
+	},
 	"plugins": [
 		"./tests/wp-env-mail.php",
 		"pronamic/wp-env-quick-login",
@@ -15,9 +18,6 @@
 	],
 	"mappings": {
 		"wp-content/plugins/pronamic-pay-contact-form-7": "."
-	},
-	"config": {
-		"PRONAMIC_PAY_DEBUG": true
 	},
 	"testsEnvironment": false
 }
