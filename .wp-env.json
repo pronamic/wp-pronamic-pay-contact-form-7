@@ -1,7 +1,10 @@
 {
 	"core": null,
 	"config": {
-		"PRONAMIC_PAY_DEBUG": true
+		"PRONAMIC_PAY_DEBUG": true,
+		"WP_DEBUG": true,
+		"WP_DEBUG_DISPLAY": true,
+		"WP_DEBUG_LOG": true
 	},
 	"plugins": [
 		"./tests/wp-env-mail.php",
