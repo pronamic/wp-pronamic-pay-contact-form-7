@@ -11,7 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
 use Pronamic\WordPress\Pay\Core\Gateway;
-use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\Parser;
@@ -99,16 +98,13 @@ final class Pronamic {
 
 		$payment->set_total_amount( $total );
 
-		// Check active payment method.
+		// Check registered payment method.
 		$payment_method = $submission_helper->get_value_by_tag_basetype_or_name_or_option( 'pronamic_pay_method' );
 
 		if ( ! empty( $payment_method ) ) {
-			if ( ! PaymentMethods::is_active( $payment_method ) ) {
-				$payment_method = strtolower( $payment_method );
-			}
+			$payment_method = self::get_registered_payment_method_id( $payment_method );
 
-			// Check lowercase payment method.
-			if ( ! PaymentMethods::is_active( $payment_method ) ) {
+			if ( null === $payment_method ) {
 				return null;
 			}
 		}
@@ -213,5 +209,31 @@ final class Pronamic {
 		$payment->set_shipping_address( $shipping_address );
 
 		return $payment;
+	}
+
+	/**
+	 * Get registered payment method ID.
+	 *
+	 * @param string $payment_method_id Payment method ID.
+	 * @return string|null
+	 */
+	private static function get_registered_payment_method_id( $payment_method_id ) {
+		$payment_methods = Plugin::instance()->get_payment_methods(
+			[
+				'status' => [ '', 'active' ],
+			]
+		);
+
+		$payment_method = $payment_methods->get( $payment_method_id );
+
+		if ( null === $payment_method ) {
+			$payment_method = $payment_methods->get( \strtolower( $payment_method_id ) );
+		}
+
+		if ( null === $payment_method ) {
+			return null;
+		}
+
+		return $payment_method->get_id();
 	}
 }

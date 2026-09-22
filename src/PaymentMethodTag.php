@@ -10,8 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\ContactForm7;
 
-use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
+use Pronamic\WordPress\Pay\Plugin;
 use WPCF7_FormTag;
 use WPCF7_Validation;
 
@@ -48,12 +47,6 @@ final class PaymentMethodTag {
 	 */
 	public function handler( $tag ) {
 		if ( empty( $tag->name ) ) {
-			return '';
-		}
-
-		$gateway = Pronamic::get_default_gateway();
-
-		if ( null === $gateway ) {
 			return '';
 		}
 
@@ -100,7 +93,7 @@ final class PaymentMethodTag {
 			}
 		}
 
-		$payment_methods = $gateway->get_payment_methods(
+		$payment_methods = Plugin::instance()->get_payment_methods(
 			[
 				'status' => [ '', 'active' ],
 			]
