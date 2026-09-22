@@ -8,8 +8,7 @@
  * @package   Pronamic\WordPress\Pay\Extensions\ContactForm7
  */
 
-use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Extensions\ContactForm7\Pronamic;
+use Pronamic\WordPress\Pay\Plugin;
 
 if ( ! isset( $args ) ) {
 	$args = [];
@@ -25,17 +24,11 @@ $desc_link = wpcf7_link( __( 'https://www.pronamic.eu/support/how-to-connect-con
 /**
  * Payment method options.
  */
-$payment_methods = [];
-
-$gateway = Pronamic::get_default_gateway();
-
-if ( null !== $gateway ) {
-	$payment_methods = $gateway->get_payment_methods(
-		[
-			'status' => [ '', 'active' ],
-		]
-	);
-}
+$payment_methods = Plugin::instance()->get_payment_methods(
+	[
+		'status' => [ '', 'active' ],
+	]
+);
 
 
 ?>

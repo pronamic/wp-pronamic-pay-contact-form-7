@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
--
+
+### Fixed
+
+- Use globally registered active payment methods instead of default gateway payment methods ([#27](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/27)).
 
 ## [4.2.1] - 2026-07-31
 
