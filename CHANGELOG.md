@@ -6,9 +6,27 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [Unreleased][unreleased]
 
+## [4.2.2] - 2026-09-28
+
 ### Fixed
 
 - Use globally registered active payment methods instead of default gateway payment methods ([#27](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/27)).
+- Pass the payment currency when parsing amounts, so totals in currencies other than EUR are calculated correctly.
+
+### Changed
+
+- Updated development tooling: bumped `@wordpress/scripts` to `^35.0.0` and `@wordpress/env` to `^11.15.0`.
+- Enabled `PRONAMIC_PAY_DEBUG` and WordPress debug logging in the `wp-env` environment.
+
+### Composer
+
+- Added `pronamic/wp-money` `^2.5` (installed: `2.5.0`). Adds an optional currency argument to `Parser::parse()`, allowing amounts to be parsed in currencies other than EUR. ([Release notes](https://github.com/pronamic/wp-money/releases/tag/v2.5.0))
+- Changed `wp-pay/core` from `^4.25` to `^4.35` (installed: `v4.35.0`). Default subscription renewal pre-notification period changed from 1 week to 14 days, fixed a currency mismatch exception when calculating payment line totals in currencies other than EUR, and fixed errors for payments/subscriptions whose post no longer exists. ([Release notes](https://github.com/pronamic/wp-pay-core/releases/tag/v4.35.0))
+- Changed `automattic/jetpack-autoloader` from `^3.0 || ^4.0 || ^5.0` to `^3.0 || ^4.0 || ^5.0 || ^6.0` (installed: `v5.0.21`). Version 6 raises the minimum supported PHP version to 7.4. ([Changelog](https://github.com/Automattic/jetpack-autoloader/blob/trunk/CHANGELOG.md))
+
+Full set of changes: [`4.2.1...4.2.2`][4.2.2]
+
+[4.2.2]: https://github.com/pronamic/wp-pronamic-pay-contact-form-7/compare/v4.2.1...v4.2.2
 
 ## [4.2.1] - 2026-07-31
 
