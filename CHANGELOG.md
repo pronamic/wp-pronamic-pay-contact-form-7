@@ -9,6 +9,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ### Fixed
 
 - Added a payment line to payments, required by payment methods such as Klarna ([#35](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/35)).
+- Set the customer email on the billing and shipping address, required by payment methods such as Klarna ([#36](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/36)).
 
 ## [4.2.2] - 2026-09-28
 
