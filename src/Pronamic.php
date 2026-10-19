@@ -176,9 +176,11 @@ final class Pronamic {
 		$contact_name->set_first_name( $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_first_name' ) );
 		$contact_name->set_last_name( $submission_helper->get_value_by_tag_name_or_option( 'pronamic_pay_last_name' ) );
 
+		$email = $submission_helper->get_value_by_tag_name_or_option_or_basetype( 'pronamic_pay_email', 'email' );
+
 		$customer = new Customer();
 		$customer->set_name( $contact_name );
-		$customer->set_email( $submission_helper->get_value_by_tag_name_or_option_or_basetype( 'pronamic_pay_email', 'email' ) );
+		$customer->set_email( $email );
 
 		$payment->set_customer( $customer );
 
@@ -186,6 +188,17 @@ final class Pronamic {
 		$address = new Address();
 
 		$address->set_name( $contact_name );
+
+		/**
+		 * Email.
+		 *
+		 * Some payment methods, such as Klarna, require a billing address email.
+		 *
+		 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/36
+		 */
+		if ( '' !== $email ) {
+			$address->set_email( $email );
+		}
 
 		$billing_address  = clone $address;
 		$shipping_address = clone $address;
@@ -199,6 +212,7 @@ final class Pronamic {
 			'country_code',
 			'company_name',
 			'coc_number',
+			'email',
 		];
 
 		foreach ( $address_fields as $field ) {
