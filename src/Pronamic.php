@@ -14,10 +14,12 @@ use Pronamic\WordPress\Pay\Core\Gateway;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\Parser;
+use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Payments\PaymentLines;
 use WPCF7_FormTagsManager;
 use WPCF7_Submission;
 
@@ -142,6 +144,22 @@ final class Pronamic {
 		$payment->set_payment_method( $payment_method );
 		$payment->set_meta( 'issuer', $issuer );
 		$payment->set_source( 'contact-form-7' );
+
+		/**
+		 * Lines.
+		 *
+		 * Some payment methods, such as Klarna, require payment lines.
+		 *
+		 * @link https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/35
+		 */
+		$payment->lines = new PaymentLines();
+
+		$line = $payment->lines->new_line();
+
+		$line->set_name( $description );
+		$line->set_quantity( new Number( 1 ) );
+		$line->set_unit_price( $total );
+		$line->set_total_amount( $total );
 
 		/**
 		 * Contact Form 7 form ID.

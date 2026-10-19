@@ -6,6 +6,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [Unreleased][unreleased]
 
+### Fixed
+
+- Added a payment line to payments, required by payment methods such as Klarna ([#35](https://github.com/pronamic/wp-pronamic-pay-contact-form-7/issues/35)).
+
 ## [4.2.2] - 2026-09-28
 
 ### Fixed
